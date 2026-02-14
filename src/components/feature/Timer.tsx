@@ -73,15 +73,15 @@ export default function Timer({
     </div>
   );
 
-  return (
-    <div className="flex items-center gap-2">
-      <button
-        onClick={() => setShowSettings(!showSettings)}
-        className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
-        title="Settings"
-      >
-        <i className="ri-settings-3-line text-lg"></i>
-      </button>
+	  return (
+	    <div className="flex items-center gap-2">
+	      <button
+	        onClick={() => setShowSettings(!showSettings)}
+	        className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
+	        title="Settings"
+	      >
+	        <i className="ri-settings-3-line text-xl"></i>
+	      </button>
       
 	      {showSettings && (
 	        <>
@@ -159,32 +159,32 @@ export default function Timer({
         </>
       )}
 
-      <div className="flex items-center gap-3 ml-auto">
-        <div className="flex items-center gap-1.5">
-          <i
-            className={`ri-error-warning-line ${
-              mistakes > 0 ? 'text-red-500' : darkMode ? 'text-gray-400' : 'text-gray-500'
-            }`}
-          ></i>
-          <span className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-            Wrong
-          </span>
-          <span className={`text-sm font-semibold ${mistakes > 0 ? 'text-red-500' : darkMode ? 'text-gray-300' : 'text-gray-600'} tabular-nums`}>
-            {mistakes}
-          </span>
-        </div>
-        {timerEnabled && (
-          <div className="flex items-center gap-2">
-            <i className={`ri-time-line ${isPaused ? 'text-red-500' : darkMode ? 'text-gray-400' : 'text-gray-500'}`}></i>
-            <span className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} tabular-nums`}>
-              {formatTime(time)}
-            </span>
-            {isPaused && (
-              <span className="text-xs text-red-500 font-medium ml-1">PAUSED</span>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+	      <div className="flex items-center gap-3 ml-auto">
+	        <div className="flex items-center gap-1.5">
+	          <i
+	            className={`ri-error-warning-line ${
+	              mistakes > 0 ? 'text-red-500' : darkMode ? 'text-gray-400' : 'text-gray-500'
+	            }`}
+	          ></i>
+	          <span className={`text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+	            Wrong
+	          </span>
+	          <span className={`text-base font-semibold ${mistakes > 0 ? 'text-red-500' : darkMode ? 'text-gray-300' : 'text-gray-600'} tabular-nums`}>
+	            {mistakes}
+	          </span>
+	        </div>
+	        {timerEnabled && (
+	          <div className="flex items-center gap-2">
+	            <i className={`ri-time-line ${isPaused ? 'text-red-500' : darkMode ? 'text-gray-400' : 'text-gray-500'}`}></i>
+	            <span className={`text-base font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} tabular-nums`}>
+	              {formatTime(time)}
+	            </span>
+	            {isPaused && (
+	              <span className="text-sm text-red-500 font-medium ml-1">PAUSED</span>
+	            )}
+	          </div>
+	        )}
+	      </div>
+	    </div>
+	  );
+	}

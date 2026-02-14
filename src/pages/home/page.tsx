@@ -240,9 +240,9 @@ export default function HomePage() {
   }, []);
 
 	  const initializeGame = useCallback((diff: 'easy' | 'medium' | 'hard') => {
-	    const { puzzleGrid, solutionGrid } = generatePuzzle(diff);
-	    const grid = createCellGrid(puzzleGrid);
-	    const initialGrid = cloneGrid(grid);
+		    const { puzzleGrid, solutionGrid } = generatePuzzle(diff);
+		    const grid = createCellGrid(puzzleGrid);
+		    const initialGrid = cloneGrid(grid);
 
 	    const newState: GameState = {
 	      grid,
@@ -268,9 +268,17 @@ export default function HomePage() {
 	      autoRemoveNotes: true,
 	    };
 
-    setGameState(newState);
-    saveGame(newState, diff);
-  }, [saveGame]);
+	    setGameState(newState);
+	    saveGame(newState, diff);
+	  }, [saveGame]);
+
+  const handleDifficultyChange = useCallback(
+    (newDifficulty: 'easy' | 'medium' | 'hard') => {
+      setDifficulty(newDifficulty);
+      initializeGame(newDifficulty);
+    },
+    [initializeGame]
+  );
 
   const loadGame = useCallback((): boolean => {
     const saved = localStorage.getItem('jkv-sudoku-save');
@@ -685,23 +693,22 @@ export default function HomePage() {
     );
   }
 
-  return (
-    <div className={`min-h-screen ${gameState.darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50'}`}>
-      <Header
-        difficulty={difficulty}
-        onDifficultyChange={setDifficulty}
-        onNewGame={() => initializeGame(difficulty)}
-        darkMode={gameState.darkMode}
-      />
+	  return (
+	    <div className={`min-h-screen ${gameState.darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50'}`}>
+	      <Header
+	        difficulty={difficulty}
+	        onDifficultyChange={handleDifficultyChange}
+	        darkMode={gameState.darkMode}
+	      />
 
       <main className="container mx-auto px-2 py-1 md:px-1 md:py-2">
 		        <div className="max-w-6xl mx-auto">
-		          {gameState.notesMode && !gameState.isPaused && !gameState.isWon ? (
-		            <div className={`max-w-md mx-auto mt-1 mb-2 px-3 py-1.5 md:mt-2 md:mb-3 md:px-4 md:py-2 rounded-lg ${gameState.darkMode ? 'bg-teal-900 text-teal-200' : 'bg-teal-100 text-teal-800'} text-sm font-medium flex items-center justify-between`}>
-		              <span className="flex items-center gap-2">
-		                <i className="ri-pencil-line"></i>
-		                Notes mode is ON (press N to toggle)
-		              </span>
+			          {gameState.notesMode && !gameState.isPaused && !gameState.isWon ? (
+			            <div className={`max-w-md mx-auto mt-1 mb-2 px-3 py-1.5 md:mt-2 md:mb-3 md:px-4 md:py-2 rounded-lg ${gameState.darkMode ? 'bg-teal-900 text-teal-200' : 'bg-teal-100 text-teal-800'} text-base font-medium flex items-center justify-between`}>
+			              <span className="flex items-center gap-2">
+			                <i className="ri-pencil-line"></i>
+			                Notes mode is ON (press N to toggle)
+			              </span>
 	              <button
 	                className="text-teal-800/80 hover:text-teal-900 underline"
 	                onClick={() =>

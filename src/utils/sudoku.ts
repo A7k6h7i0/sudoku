@@ -162,177 +162,102 @@ export function generatePuzzle(difficulty: 'easy' | 'medium' | 'hard'): {
   puzzleGrid: number[][];
   solutionGrid: number[][];
 } {
-  // Ultra-easy: leave exactly one empty cell per row (9 empties total).
-  if (difficulty === 'easy') {
-    for (let attempt = 0; attempt < 50; attempt++) {
-      const solutionGrid = generateSolvedGrid();
-      const puzzleGrid = solutionGrid.map((row) => [...row]);
+  const randInt = (min: number, max: number): number =>
+    Math.floor(Math.random() * (max - min + 1)) + min;
 
-      for (let r = 0; r < 9; r++) {
-        const col = Math.floor(Math.random() * 9);
-        puzzleGrid[r][col] = 0;
-      }
-
-      // Keep uniqueness (should almost always pass with only 9 blanks, but verify).
-      const testGrid = puzzleGrid.map((r) => [...r]);
-      const solutions = countSolutions(testGrid, 2);
-      if (solutions === 1) {
-        return { puzzleGrid, solutionGrid };
-      }
+  const getRowEmptyTargets = (): number[] => {
+    if (difficulty === 'easy') {
+      // Easy: 1 empty per row, and in 2–3 random rows add one extra empty (=> 2 empties).
+      const targets = Array(9).fill(1);
+      const extraRows = randInt(2, 3);
+      const rows = Array.from({ length: 9 }, (_, r) => r);
+      shuffleArray(rows);
+      for (let i = 0; i < extraRows; i++) targets[rows[i]] = 2;
+      return targets;
     }
 
-    // Fallback without uniqueness enforcement (very unlikely to hit).
-    const solutionGrid = generateSolvedGrid();
-    const puzzleGrid = solutionGrid.map((row) => [...row]);
-    for (let r = 0; r < 9; r++) {
-      const col = Math.floor(Math.random() * 9);
-      puzzleGrid[r][col] = 0;
+    if (difficulty === 'medium') {
+      // Medium: 3–4 empty boxes in each row.
+      return Array.from({ length: 9 }, () => randInt(3, 4));
     }
-    return { puzzleGrid, solutionGrid };
-  }
 
-  // Determine number of cells to remove
-  // Fewer removals => easier. Keep "easy" noticeably easier while still leaving
-  // enough blanks for play.
-  const cellsToRemove = difficulty === 'medium' ? 42 : 57;
-
-  // Requirement: every row and every column must have at least 2 empty cells.
-  const minEmptyPerRowCol = 2;
-
-  const meetsRowColMinimums = (grid: number[][]): boolean => {
-    for (let r = 0; r < 9; r++) {
-      let empties = 0;
-      for (let c = 0; c < 9; c++) {
-        if (grid[r][c] === 0) empties++;
-      }
-      if (empties < minEmptyPerRowCol) return false;
-    }
-    for (let c = 0; c < 9; c++) {
-      let empties = 0;
-      for (let r = 0; r < 9; r++) {
-        if (grid[r][c] === 0) empties++;
-      }
-      if (empties < minEmptyPerRowCol) return false;
-    }
-    return true;
+    // Hard: 4–6 empty boxes in each row.
+    return Array.from({ length: 9 }, () => randInt(4, 6));
   };
 
-  for (let attempt = 0; attempt < 25; attempt++) {
-    const solutionGrid = generateSolvedGrid();
+  const countRowEmpties = (grid: number[][], row: number): number => {
+    let empties = 0;
+    for (let c = 0; c < 9; c++) if (grid[row][c] === 0) empties++;
+    return empties;
+  };
+
+  const buildPuzzle = (
+    solutionGrid: number[][],
+    rowTargets: number[],
+    enforceUniqueness: boolean
+  ): number[][] | null => {
     const puzzleGrid = solutionGrid.map((row) => [...row]);
 
-    const positions: [number, number][] = [];
-    for (let r = 0; r < 9; r++) {
-      for (let c = 0; c < 9; c++) {
-        positions.push([r, c]);
-      }
-    }
-    shuffleArray(positions);
-
-    const removedInRow = Array(9).fill(0);
-    const removedInCol = Array(9).fill(0);
     const canRemove = (row: number, col: number): boolean => puzzleGrid[row][col] !== 0;
-
     const tryRemove = (row: number, col: number): boolean => {
       if (!canRemove(row, col)) return false;
 
       const backup = puzzleGrid[row][col];
       puzzleGrid[row][col] = 0;
 
-      // Check uniqueness
+      if (!enforceUniqueness) return true;
+
       const testGrid = puzzleGrid.map((r) => [...r]);
       const solutions = countSolutions(testGrid, 2);
-
-      if (solutions === 1) {
-        removedInRow[row]++;
-        removedInCol[col]++;
-        return true;
-      }
+      if (solutions === 1) return true;
 
       puzzleGrid[row][col] = backup;
       return false;
     };
 
-    let removed = 0;
+    const rows = Array.from({ length: 9 }, (_, r) => r);
+    shuffleArray(rows);
 
-    // Phase 1: satisfy per-row minimum empties
-    for (let row = 0; row < 9 && removed < cellsToRemove; row++) {
+    for (const row of rows) {
+      const target = rowTargets[row] ?? 0;
       let guard = 0;
-      while (removedInRow[row] < minEmptyPerRowCol && removed < cellsToRemove && guard < 200) {
+      while (countRowEmpties(puzzleGrid, row) < target && guard < 500) {
         guard++;
         const cols = Array.from({ length: 9 }, (_, c) => c);
         shuffleArray(cols);
-        let didRemove = false;
+
+        let removed = false;
         for (const col of cols) {
           if (tryRemove(row, col)) {
-            removed++;
-            didRemove = true;
+            removed = true;
             break;
           }
         }
-        if (!didRemove) break;
+
+        if (!removed) return null;
       }
+
+      if (countRowEmpties(puzzleGrid, row) !== target) return null;
     }
 
-    // Phase 2: satisfy per-column minimum empties
-    for (let col = 0; col < 9 && removed < cellsToRemove; col++) {
-      let guard = 0;
-      while (removedInCol[col] < minEmptyPerRowCol && removed < cellsToRemove && guard < 200) {
-        guard++;
-        const rows = Array.from({ length: 9 }, (_, r) => r);
-        shuffleArray(rows);
-        let didRemove = false;
-        for (const row of rows) {
-          if (tryRemove(row, col)) {
-            removed++;
-            didRemove = true;
-            break;
-          }
-        }
-        if (!didRemove) break;
-      }
-    }
+    return puzzleGrid;
+  };
 
-    // Phase 3: remove remaining cells randomly
-    for (const [row, col] of positions) {
-      if (removed >= cellsToRemove) break;
-      if (tryRemove(row, col)) removed++;
-    }
-
-    if (meetsRowColMinimums(puzzleGrid)) {
-      return { puzzleGrid, solutionGrid };
-    }
+  for (let attempt = 0; attempt < 80; attempt++) {
+    const solutionGrid = generateSolvedGrid();
+    const rowTargets = getRowEmptyTargets();
+    const puzzleGrid = buildPuzzle(solutionGrid, rowTargets, true);
+    if (puzzleGrid) return { puzzleGrid, solutionGrid };
   }
 
-  // Fallback (should be rare): return a normal unique puzzle without the row/col constraint.
+  // Fallback: still meet the per-row empty requirements, but skip uniqueness enforcement.
   const solutionGrid = generateSolvedGrid();
-  const puzzleGrid = solutionGrid.map((row) => [...row]);
-  const positions: [number, number][] = [];
-  for (let r = 0; r < 9; r++) {
-    for (let c = 0; c < 9; c++) {
-      positions.push([r, c]);
-    }
-  }
-  shuffleArray(positions);
-
-  let removed = 0;
-  for (const [row, col] of positions) {
-    if (removed >= cellsToRemove) break;
-
-    const backup = puzzleGrid[row][col];
-    puzzleGrid[row][col] = 0;
-
-    const testGrid = puzzleGrid.map((r) => [...r]);
-    const solutions = countSolutions(testGrid, 2);
-
-    if (solutions === 1) {
-      removed++;
-    } else {
-      puzzleGrid[row][col] = backup;
-    }
-  }
-
-  return { puzzleGrid, solutionGrid };
+  const rowTargets = getRowEmptyTargets();
+  const puzzleGrid = buildPuzzle(solutionGrid, rowTargets, false);
+  return {
+    puzzleGrid: puzzleGrid ?? solutionGrid.map((row) => [...row]),
+    solutionGrid,
+  };
 }
 
 // Convert number grid to Cell grid
