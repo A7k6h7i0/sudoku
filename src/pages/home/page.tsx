@@ -713,9 +713,9 @@ export default function HomePage() {
 	            </div>
 	          ) : null}
 
-		          <div className="grid grid-cols-1 lg:grid-cols-3 gap-1 lg:gap-1">
+		          <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-1">
 	            <div className="lg:col-span-2">
-	              <div className="flex justify-between items-center mb-1">
+	              <div className="w-full max-w-xs sm:max-w-sm mx-auto mb-1 relative">
 	                <Timer 
 	                  time={gameState.time} 
 	                  isPaused={gameState.isPaused} 
@@ -738,10 +738,10 @@ export default function HomePage() {
 	                  onAutoNotesToggle={toggleAutoNotes}
 	                  highlightRowCol={gameState.highlightRowCol}
                   onHighlightRowColToggle={toggleHighlightRowCol}
-                  autoRemoveNotes={gameState.autoRemoveNotes}
-                  onAutoRemoveNotesToggle={toggleAutoRemoveNotes}
-                />
-              </div>
+	                  autoRemoveNotes={gameState.autoRemoveNotes}
+	                  onAutoRemoveNotesToggle={toggleAutoRemoveNotes}
+	                />
+	              </div>
 	              <SudokuBoard
 	                grid={gameState.grid}
 	                solution={gameState.solution}
@@ -761,9 +761,9 @@ export default function HomePage() {
 	              <ControlPanel
 	                notesMode={gameState.notesMode}
 	                hintsLeft={gameState.hintsLeft}
-                isPaused={gameState.isPaused}
-                canUndo={gameState.historyIndex > 0}
-                canRedo={gameState.historyIndex < gameState.history.length - 1}
+	                isPaused={gameState.isPaused}
+	                canUndo={gameState.historyIndex > 0}
+	                canRedo={gameState.historyIndex < gameState.history.length - 1}
                 numberCounts={getNumberCounts()}
                 onNumberClick={handleNumberInput}
                 onNotesToggle={() =>

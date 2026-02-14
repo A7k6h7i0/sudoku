@@ -36,7 +36,7 @@ export default function ControlPanel({
   darkMode,
 }: ControlPanelProps) {
   return (
-    <div className="w-full max-w-lg mx-auto space-y-1 md:space-y-2">
+    <div className="w-full max-w-xs sm:max-w-sm mx-auto space-y-1 md:space-y-2">
       {/* Action Buttons Row */}
       <div className={`${darkMode ? 'bg-gray-800' : 'bg-[#F3F4F6]'} rounded-lg p-1.5 md:p-2`}>
         <div className="flex justify-center gap-1.5 md:gap-3">

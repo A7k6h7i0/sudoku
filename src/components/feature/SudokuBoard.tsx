@@ -44,11 +44,9 @@ export default function SudokuBoard({
             : 'bg-gradient-to-br from-teal-500 via-cyan-500 to-blue-500'
         }`}
       >
-        <div className={`${darkMode ? 'bg-gray-900' : 'bg-white'} rounded-[14px] p-1`}>
+        <div className={`${darkMode ? 'bg-gray-900' : 'bg-[#FFF7E6]'} rounded-[14px] p-1`}>
           <div
-            className={`grid grid-cols-9 gap-0 rounded-xl overflow-hidden ${
-              darkMode ? 'border-2 border-gray-600' : 'border-2 border-gray-800'
-            }`}
+            className="grid grid-cols-9 gap-0 rounded-xl overflow-hidden"
           >
           {grid.map((row, rowIndex) =>
             row.map((cell, colIndex) => {
