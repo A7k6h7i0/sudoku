@@ -31,6 +31,8 @@ interface GameState {
   // Settings
   darkMode: boolean;
   timerEnabled: boolean;
+  soundEnabled: boolean;
+  musicEnabled: boolean;
   lightningMode: boolean;
   autoNotes: boolean;
   highlightRowCol: boolean;
@@ -52,6 +54,8 @@ interface SavedGame {
   historyIndex: number;
   darkMode: boolean;
   timerEnabled: boolean;
+  soundEnabled?: boolean;
+  musicEnabled?: boolean;
   lightningMode: boolean;
   autoNotes: boolean;
   highlightRowCol: boolean;
@@ -59,7 +63,7 @@ interface SavedGame {
 }
 
 const getMaxHints = (diff: 'easy' | 'medium' | 'hard'): number => {
-  return diff === 'easy' ? 5 : diff === 'medium' ? 3 : 1;
+  return diff === 'easy' ? 7 : diff === 'medium' ? 3 : 1;
 };
 
 const cloneGrid = (grid: Grid): Grid =>
@@ -108,6 +112,110 @@ export default function HomePage() {
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('easy');
   const [gameState, setGameState] = useState<GameState | null>(null);
 
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const musicNodesRef = useRef<{
+    osc1: OscillatorNode;
+    osc2: OscillatorNode;
+    gain: GainNode;
+  } | null>(null);
+
+  const getAudioContext = (): AudioContext | null => {
+    if (typeof window === 'undefined') return null;
+    const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!AudioCtx) return null;
+
+    if (!audioContextRef.current) {
+      audioContextRef.current = new AudioCtx();
+    }
+
+    if (audioContextRef.current.state === 'suspended') {
+      void audioContextRef.current.resume();
+    }
+
+    return audioContextRef.current;
+  };
+
+  const playSfx = useCallback((kind: 'place' | 'wrong' | 'win') => {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    if (kind === 'place') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(740, now);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.06, now + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+      osc.start(now);
+      osc.stop(now + 0.1);
+    } else if (kind === 'wrong') {
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(180, now);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.08, now + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+      osc.start(now);
+      osc.stop(now + 0.15);
+    } else {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.08, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+      osc.start(now);
+      osc.stop(now + 0.3);
+    }
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+  }, []);
+
+  const startMusic = useCallback(() => {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    if (musicNodesRef.current) return;
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.02, ctx.currentTime + 0.2);
+
+    const osc1 = ctx.createOscillator();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(220, ctx.currentTime);
+
+    const osc2 = ctx.createOscillator();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(330, ctx.currentTime);
+
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc1.start();
+    osc2.start();
+
+    musicNodesRef.current = { osc1, osc2, gain };
+  }, []);
+
+  const stopMusic = useCallback(() => {
+    const ctx = audioContextRef.current;
+    const nodes = musicNodesRef.current;
+    if (!ctx || !nodes) return;
+
+    const now = ctx.currentTime;
+    nodes.gain.gain.cancelScheduledValues(now);
+    nodes.gain.gain.setValueAtTime(Math.max(nodes.gain.gain.value, 0.0001), now);
+    nodes.gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.15);
+
+    nodes.osc1.stop(now + 0.16);
+    nodes.osc2.stop(now + 0.16);
+    musicNodesRef.current = null;
+  }, []);
+
   const saveGame = useCallback((state: GameState, diff: 'easy' | 'medium' | 'hard') => {
     const savedGame: SavedGame = {
       grid: serializeGrid(state.grid),
@@ -121,6 +229,8 @@ export default function HomePage() {
       historyIndex: state.historyIndex,
       darkMode: state.darkMode,
       timerEnabled: state.timerEnabled,
+      soundEnabled: state.soundEnabled,
+      musicEnabled: state.musicEnabled,
       lightningMode: state.lightningMode,
       autoNotes: state.autoNotes,
       highlightRowCol: state.highlightRowCol,
@@ -129,32 +239,34 @@ export default function HomePage() {
     localStorage.setItem('jkv-sudoku-save', JSON.stringify(savedGame));
   }, []);
 
-  const initializeGame = useCallback((diff: 'easy' | 'medium' | 'hard') => {
-    const { puzzleGrid, solutionGrid } = generatePuzzle(diff);
-    const grid = createCellGrid(puzzleGrid);
-    const initialGrid = cloneGrid(grid);
+	  const initializeGame = useCallback((diff: 'easy' | 'medium' | 'hard') => {
+	    const { puzzleGrid, solutionGrid } = generatePuzzle(diff);
+	    const grid = createCellGrid(puzzleGrid);
+	    const initialGrid = cloneGrid(grid);
 
-    const newState: GameState = {
-      grid,
-      solution: solutionGrid,
-      initialGrid,
-      selectedCell: null,
-      notesMode: false,
-      showMistakes: true,
-      hintsLeft: getMaxHints(diff),
-      mistakes: 0,
-      history: [cloneGrid(grid)],
-      historyIndex: 0,
-      time: 0,
-      isPaused: false,
-      isWon: false,
-      darkMode: false,
-      timerEnabled: true,
-      lightningMode: false,
-      autoNotes: false,
-      highlightRowCol: true,
-      autoRemoveNotes: true,
-    };
+	    const newState: GameState = {
+	      grid,
+	      solution: solutionGrid,
+	      initialGrid,
+	      selectedCell: null,
+	      notesMode: false,
+	      showMistakes: true,
+	      hintsLeft: getMaxHints(diff),
+	      mistakes: 0,
+	      history: [cloneGrid(grid)],
+	      historyIndex: 0,
+	      time: 0,
+	      isPaused: false,
+	      isWon: false,
+	      darkMode: false,
+	      timerEnabled: true,
+	      soundEnabled: true,
+	      musicEnabled: false,
+	      lightningMode: false,
+	      autoNotes: false,
+	      highlightRowCol: true,
+	      autoRemoveNotes: true,
+	    };
 
     setGameState(newState);
     saveGame(newState, diff);
@@ -173,28 +285,30 @@ export default function HomePage() {
         ? savedGame.history.map(hydrateGrid)
         : [cloneGrid(grid)];
 
-      setDifficulty(savedGame.difficulty);
-      setGameState({
-        grid,
-        solution: savedGame.solution,
-        initialGrid,
-        selectedCell: null,
-        notesMode: false,
-        showMistakes: true,
-        hintsLeft: savedGame.hintsLeft,
-        mistakes: savedGame.mistakes,
-        history,
-        historyIndex: savedGame.historyIndex,
-        time: savedGame.time,
-        isPaused: false,
-        isWon: false,
-        darkMode: savedGame.darkMode ?? false,
-        timerEnabled: savedGame.timerEnabled ?? true,
-        lightningMode: savedGame.lightningMode ?? false,
-        autoNotes: savedGame.autoNotes ?? false,
-        highlightRowCol: savedGame.highlightRowCol ?? true,
-        autoRemoveNotes: savedGame.autoRemoveNotes ?? true,
-      });
+	      setDifficulty(savedGame.difficulty);
+	      setGameState({
+	        grid,
+	        solution: savedGame.solution,
+	        initialGrid,
+	        selectedCell: null,
+	        notesMode: false,
+	        showMistakes: true,
+	        hintsLeft: savedGame.hintsLeft,
+	        mistakes: savedGame.mistakes,
+	        history,
+	        historyIndex: savedGame.historyIndex,
+	        time: savedGame.time,
+	        isPaused: false,
+	        isWon: false,
+	        darkMode: savedGame.darkMode ?? false,
+	        timerEnabled: savedGame.timerEnabled ?? true,
+	        soundEnabled: savedGame.soundEnabled ?? true,
+	        musicEnabled: savedGame.musicEnabled ?? false,
+	        lightningMode: savedGame.lightningMode ?? false,
+	        autoNotes: savedGame.autoNotes ?? false,
+	        highlightRowCol: savedGame.highlightRowCol ?? true,
+	        autoRemoveNotes: savedGame.autoRemoveNotes ?? true,
+	      });
 
       return true;
     } catch (error) {
@@ -214,6 +328,30 @@ export default function HomePage() {
       initializeGame(difficulty);
     }
   }, [difficulty, initializeGame, loadGame]);
+
+  useEffect(() => {
+    if (!gameState) return;
+    if (!gameState.musicEnabled || gameState.isPaused || gameState.isWon) {
+      stopMusic();
+      return;
+    }
+    startMusic();
+  }, [gameState, startMusic, stopMusic]);
+
+  useEffect(() => {
+    return () => {
+      stopMusic();
+    };
+  }, [stopMusic]);
+
+  const prevWonRef = useRef(false);
+  useEffect(() => {
+    if (!gameState) return;
+    if (!prevWonRef.current && gameState.isWon && gameState.soundEnabled) {
+      playSfx('win');
+    }
+    prevWonRef.current = gameState.isWon;
+  }, [gameState, playSfx]);
 
   const isTicking = Boolean(gameState) && !gameState.isPaused && !gameState.isWon;
 
@@ -305,8 +443,12 @@ export default function HomePage() {
         }
       }
 
-      if (gameState.solution[row][col] !== num) {
+      const isWrong = gameState.solution[row][col] !== num;
+      if (isWrong) {
         setGameState((prev) => prev ? { ...prev, mistakes: prev.mistakes + 1 } : prev);
+        if (gameState.soundEnabled) playSfx('wrong');
+      } else if (gameState.soundEnabled) {
+        playSfx('place');
       }
     }
 
@@ -316,7 +458,7 @@ export default function HomePage() {
     if (isPuzzleSolved(updatedGrid, gameState.solution)) {
       setGameState((prev) => prev ? { ...prev, isWon: true, grid: updatedGrid } : prev);
     }
-  }, [addToHistory, gameState, updateConflicts]);
+  }, [addToHistory, gameState, playSfx, updateConflicts]);
 
   const handleClearCell = useCallback(() => {
     if (!gameState || !gameState.selectedCell) return;
@@ -418,6 +560,7 @@ export default function HomePage() {
     addToHistory(updatedGrid);
 
     setGameState((prev) => prev ? { ...prev, hintsLeft: prev.hintsLeft - 1 } : prev);
+    if (gameState.soundEnabled) playSfx('place');
 
     if (isPuzzleSolved(updatedGrid, gameState.solution)) {
       setGameState((prev) => prev ? { ...prev, isWon: true, grid: updatedGrid } : prev);
@@ -473,6 +616,24 @@ export default function HomePage() {
 
   const toggleTimer = () => {
     setGameState((prev) => prev ? { ...prev, timerEnabled: !prev.timerEnabled } : prev);
+  };
+
+  const toggleSound = () => {
+    setGameState((prev) => {
+      if (!prev) return prev;
+      const newState = { ...prev, soundEnabled: !prev.soundEnabled };
+      saveGame(newState, difficulty);
+      return newState;
+    });
+  };
+
+  const toggleMusic = () => {
+    setGameState((prev) => {
+      if (!prev) return prev;
+      const newState = { ...prev, musicEnabled: !prev.musicEnabled };
+      saveGame(newState, difficulty);
+      return newState;
+    });
   };
 
   const toggleLightningMode = () => {
@@ -533,14 +694,14 @@ export default function HomePage() {
         darkMode={gameState.darkMode}
       />
 
-      <main className="container mx-auto px-1 py-2 md:py-2">
-	        <div className="max-w-6xl mx-auto">
-	          {gameState.notesMode && !gameState.isPaused && !gameState.isWon ? (
-	            <div className={`max-w-md mx-auto mt-2 mb-3 px-4 py-2 rounded-lg ${gameState.darkMode ? 'bg-teal-900 text-teal-200' : 'bg-teal-100 text-teal-800'} text-sm font-medium flex items-center justify-between`}>
-	              <span className="flex items-center gap-2">
-	                <i className="ri-pencil-line"></i>
-	                Notes mode is ON (press N to toggle)
-	              </span>
+      <main className="container mx-auto px-2 py-1 md:px-1 md:py-2">
+		        <div className="max-w-6xl mx-auto">
+		          {gameState.notesMode && !gameState.isPaused && !gameState.isWon ? (
+		            <div className={`max-w-md mx-auto mt-1 mb-2 px-3 py-1.5 md:mt-2 md:mb-3 md:px-4 md:py-2 rounded-lg ${gameState.darkMode ? 'bg-teal-900 text-teal-200' : 'bg-teal-100 text-teal-800'} text-sm font-medium flex items-center justify-between`}>
+		              <span className="flex items-center gap-2">
+		                <i className="ri-pencil-line"></i>
+		                Notes mode is ON (press N to toggle)
+		              </span>
 	              <button
 	                className="text-teal-800/80 hover:text-teal-900 underline"
 	                onClick={() =>
@@ -552,47 +713,54 @@ export default function HomePage() {
 	            </div>
 	          ) : null}
 
-	          <div className="grid grid-cols-1 lg:grid-cols-3 gap-1 lg:gap-1">
-            <div className="lg:col-span-2">
-              <div className="flex justify-between items-center mb-1">
-                <Timer 
-                  time={gameState.time} 
-                  isPaused={gameState.isPaused} 
-                  mistakes={gameState.mistakes}
-                  showMistakes={gameState.showMistakes}
+		          <div className="grid grid-cols-1 lg:grid-cols-3 gap-1 lg:gap-1">
+	            <div className="lg:col-span-2">
+	              <div className="flex justify-between items-center mb-1">
+	                <Timer 
+	                  time={gameState.time} 
+	                  isPaused={gameState.isPaused} 
+	                  mistakes={gameState.mistakes}
+	                  showMistakes={gameState.showMistakes}
                   onShowMistakesToggle={() =>
                     setGameState((prev) => prev ? { ...prev, showMistakes: !prev.showMistakes } : prev)
                   }
-                  darkMode={gameState.darkMode}
-                  onDarkModeToggle={toggleDarkMode}
-                  timerEnabled={gameState.timerEnabled}
-                  onTimerToggle={toggleTimer}
-                  lightningMode={gameState.lightningMode}
-                  onLightningModeToggle={toggleLightningMode}
-                  autoNotes={gameState.autoNotes}
-                  onAutoNotesToggle={toggleAutoNotes}
-                  highlightRowCol={gameState.highlightRowCol}
+	                  darkMode={gameState.darkMode}
+	                  onDarkModeToggle={toggleDarkMode}
+	                  timerEnabled={gameState.timerEnabled}
+	                  onTimerToggle={toggleTimer}
+                    soundEnabled={gameState.soundEnabled}
+                    onSoundToggle={toggleSound}
+                    musicEnabled={gameState.musicEnabled}
+                    onMusicToggle={toggleMusic}
+	                  lightningMode={gameState.lightningMode}
+	                  onLightningModeToggle={toggleLightningMode}
+	                  autoNotes={gameState.autoNotes}
+	                  onAutoNotesToggle={toggleAutoNotes}
+	                  highlightRowCol={gameState.highlightRowCol}
                   onHighlightRowColToggle={toggleHighlightRowCol}
                   autoRemoveNotes={gameState.autoRemoveNotes}
                   onAutoRemoveNotesToggle={toggleAutoRemoveNotes}
                 />
               </div>
-              <SudokuBoard
-                grid={gameState.grid}
-                selectedCell={gameState.selectedCell}
-                showMistakes={gameState.showMistakes}
-                onCellClick={(row, col) => {
-                  if (!gameState.isPaused && !gameState.isWon) {
-                    setGameState((prev) => prev ? { ...prev, selectedCell: [row, col] } : prev);
-                  }
-                }}
-              />
-            </div>
+	              <SudokuBoard
+	                grid={gameState.grid}
+	                solution={gameState.solution}
+	                selectedCell={gameState.selectedCell}
+	                showMistakes={gameState.showMistakes}
+                  highlightRowCol={gameState.highlightRowCol}
+                  darkMode={gameState.darkMode}
+	                onCellClick={(row, col) => {
+	                  if (!gameState.isPaused && !gameState.isWon) {
+	                    setGameState((prev) => prev ? { ...prev, selectedCell: [row, col] } : prev);
+	                  }
+	                }}
+	              />
+	            </div>
 
-            <div className="flex flex-col gap-4">
-              <ControlPanel
-                notesMode={gameState.notesMode}
-                hintsLeft={gameState.hintsLeft}
+	            <div className="flex flex-col gap-2 md:gap-4">
+	              <ControlPanel
+	                notesMode={gameState.notesMode}
+	                hintsLeft={gameState.hintsLeft}
                 isPaused={gameState.isPaused}
                 canUndo={gameState.historyIndex > 0}
                 canRedo={gameState.historyIndex < gameState.history.length - 1}

@@ -162,13 +162,122 @@ export function generatePuzzle(difficulty: 'easy' | 'medium' | 'hard'): {
   puzzleGrid: number[][];
   solutionGrid: number[][];
 } {
+  // Determine number of cells to remove
+  // Fewer removals => easier. Keep "easy" noticeably easier while still leaving
+  // enough blanks for play.
+  const cellsToRemove = difficulty === 'easy' ? 24 : difficulty === 'medium' ? 42 : 57;
+
+  // Requirement: every row and every column must have at least 2 empty cells.
+  const minEmptyPerRowCol = 2;
+
+  const meetsRowColMinimums = (grid: number[][]): boolean => {
+    for (let r = 0; r < 9; r++) {
+      let empties = 0;
+      for (let c = 0; c < 9; c++) {
+        if (grid[r][c] === 0) empties++;
+      }
+      if (empties < minEmptyPerRowCol) return false;
+    }
+    for (let c = 0; c < 9; c++) {
+      let empties = 0;
+      for (let r = 0; r < 9; r++) {
+        if (grid[r][c] === 0) empties++;
+      }
+      if (empties < minEmptyPerRowCol) return false;
+    }
+    return true;
+  };
+
+  for (let attempt = 0; attempt < 25; attempt++) {
+    const solutionGrid = generateSolvedGrid();
+    const puzzleGrid = solutionGrid.map((row) => [...row]);
+
+    const positions: [number, number][] = [];
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        positions.push([r, c]);
+      }
+    }
+    shuffleArray(positions);
+
+    const removedInRow = Array(9).fill(0);
+    const removedInCol = Array(9).fill(0);
+    const canRemove = (row: number, col: number): boolean => puzzleGrid[row][col] !== 0;
+
+    const tryRemove = (row: number, col: number): boolean => {
+      if (!canRemove(row, col)) return false;
+
+      const backup = puzzleGrid[row][col];
+      puzzleGrid[row][col] = 0;
+
+      // Check uniqueness
+      const testGrid = puzzleGrid.map((r) => [...r]);
+      const solutions = countSolutions(testGrid, 2);
+
+      if (solutions === 1) {
+        removedInRow[row]++;
+        removedInCol[col]++;
+        return true;
+      }
+
+      puzzleGrid[row][col] = backup;
+      return false;
+    };
+
+    let removed = 0;
+
+    // Phase 1: satisfy per-row minimum empties
+    for (let row = 0; row < 9 && removed < cellsToRemove; row++) {
+      let guard = 0;
+      while (removedInRow[row] < minEmptyPerRowCol && removed < cellsToRemove && guard < 200) {
+        guard++;
+        const cols = Array.from({ length: 9 }, (_, c) => c);
+        shuffleArray(cols);
+        let didRemove = false;
+        for (const col of cols) {
+          if (tryRemove(row, col)) {
+            removed++;
+            didRemove = true;
+            break;
+          }
+        }
+        if (!didRemove) break;
+      }
+    }
+
+    // Phase 2: satisfy per-column minimum empties
+    for (let col = 0; col < 9 && removed < cellsToRemove; col++) {
+      let guard = 0;
+      while (removedInCol[col] < minEmptyPerRowCol && removed < cellsToRemove && guard < 200) {
+        guard++;
+        const rows = Array.from({ length: 9 }, (_, r) => r);
+        shuffleArray(rows);
+        let didRemove = false;
+        for (const row of rows) {
+          if (tryRemove(row, col)) {
+            removed++;
+            didRemove = true;
+            break;
+          }
+        }
+        if (!didRemove) break;
+      }
+    }
+
+    // Phase 3: remove remaining cells randomly
+    for (const [row, col] of positions) {
+      if (removed >= cellsToRemove) break;
+      if (tryRemove(row, col)) removed++;
+    }
+
+    if (meetsRowColMinimums(puzzleGrid)) {
+      return { puzzleGrid, solutionGrid };
+    }
+  }
+
+  // Fallback (should be rare): return a normal unique puzzle without the row/col constraint.
   const solutionGrid = generateSolvedGrid();
   const puzzleGrid = solutionGrid.map((row) => [...row]);
-
-  // Determine number of cells to remove
-  const cellsToRemove =
-    difficulty === 'easy' ? 36 : difficulty === 'medium' ? 47 : 57;
-
   const positions: [number, number][] = [];
   for (let r = 0; r < 9; r++) {
     for (let c = 0; c < 9; c++) {
@@ -184,7 +293,6 @@ export function generatePuzzle(difficulty: 'easy' | 'medium' | 'hard'): {
     const backup = puzzleGrid[row][col];
     puzzleGrid[row][col] = 0;
 
-    // Check uniqueness
     const testGrid = puzzleGrid.map((r) => [...r]);
     const solutions = countSolutions(testGrid, 2);
 

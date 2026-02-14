@@ -39,13 +39,13 @@ export default function ControlPanel({
     <div className="w-full max-w-lg mx-auto space-y-1 md:space-y-2">
       {/* Action Buttons Row */}
       <div className={`${darkMode ? 'bg-gray-800' : 'bg-[#F3F4F6]'} rounded-lg p-1.5 md:p-2`}>
-        <div className="flex justify-center gap-2 md:gap-3">
+        <div className="flex justify-center gap-1.5 md:gap-3">
           {/* Undo Button */}
           <button
             onClick={onUndo}
             disabled={!canUndo}
             className={`
-              flex flex-col items-center gap-0.5 w-11 md:w-14
+              flex flex-col items-center gap-0.5 w-10 md:w-14
               transition-all duration-200 active:scale-95
               ${canUndo ? (darkMode ? 'text-gray-300 hover:text-[#3B5BDB]' : 'text-gray-600 hover:text-[#3B5BDB]') : (darkMode ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 cursor-not-allowed')}
             `}
@@ -54,10 +54,24 @@ export default function ControlPanel({
             <span className={`text-xs ${canUndo ? (darkMode ? 'text-gray-300' : 'text-gray-600') : (darkMode ? 'text-gray-600' : 'text-gray-300')}`}>Undo</span>
           </button>
 
+          {/* Redo Button */}
+          <button
+            onClick={onRedo}
+            disabled={!canRedo}
+            className={`
+              flex flex-col items-center gap-0.5 w-10 md:w-14
+              transition-all duration-200 active:scale-95
+              ${canRedo ? (darkMode ? 'text-gray-300 hover:text-[#3B5BDB]' : 'text-gray-600 hover:text-[#3B5BDB]') : (darkMode ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 cursor-not-allowed')}
+            `}
+          >
+            <i className={`ri-arrow-go-forward-line text-xl md:text-xl ${canRedo ? (darkMode ? 'text-gray-300' : 'text-gray-600') : (darkMode ? 'text-gray-600' : 'text-gray-300')}`}></i>
+            <span className={`text-xs ${canRedo ? (darkMode ? 'text-gray-300' : 'text-gray-600') : (darkMode ? 'text-gray-600' : 'text-gray-300')}`}>Redo</span>
+          </button>
+
           {/* Erase/Clear Button */}
           <button
             onClick={onClear}
-            className={`flex flex-col items-center gap-0.5 w-11 md:w-14 ${darkMode ? 'text-gray-300 hover:text-[#3B5BDB]' : 'text-gray-600 hover:text-[#3B5BDB]'} transition-all duration-200 active:scale-95`}
+            className={`flex flex-col items-center gap-0.5 w-10 md:w-14 ${darkMode ? 'text-gray-300 hover:text-[#3B5BDB]' : 'text-gray-600 hover:text-[#3B5BDB]'} transition-all duration-200 active:scale-95`}
           >
             <i className={`ri-eraser-line text-xl md:text-xl ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}></i>
             <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Erase</span>
@@ -67,7 +81,7 @@ export default function ControlPanel({
           <button
             onClick={onNotesToggle}
             className={`
-              flex flex-col items-center gap-0.5 w-11 md:w-14
+              flex flex-col items-center gap-0.5 w-10 md:w-14
               transition-all duration-200 active:scale-95
               ${notesMode ? 'text-[#3B5BDB]' : (darkMode ? 'text-gray-300 hover:text-[#3B5BDB]' : 'text-gray-600 hover:text-[#3B5BDB]')}
             `}
@@ -81,7 +95,7 @@ export default function ControlPanel({
             onClick={onHint}
             disabled={hintsLeft === 0}
             className={`
-              flex flex-col items-center gap-0.5 w-11 md:w-14
+              flex flex-col items-center gap-0.5 w-10 md:w-14
               transition-all duration-200 active:scale-95
               ${hintsLeft === 0 ? (darkMode ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 cursor-not-allowed') : (darkMode ? 'text-gray-300 hover:text-[#3B5BDB]' : 'text-gray-600 hover:text-[#3B5BDB]')}
             `}

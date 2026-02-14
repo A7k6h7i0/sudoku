@@ -11,6 +11,10 @@ interface TimerProps {
   onDarkModeToggle?: () => void;
   timerEnabled?: boolean;
   onTimerToggle?: () => void;
+  soundEnabled?: boolean;
+  onSoundToggle?: () => void;
+  musicEnabled?: boolean;
+  onMusicToggle?: () => void;
   lightningMode?: boolean;
   onLightningModeToggle?: () => void;
   autoNotes?: boolean;
@@ -31,6 +35,10 @@ export default function Timer({
   onDarkModeToggle,
   timerEnabled = true,
   onTimerToggle,
+  soundEnabled = true,
+  onSoundToggle,
+  musicEnabled = false,
+  onMusicToggle,
   lightningMode = false,
   onLightningModeToggle,
   autoNotes = false,
@@ -75,35 +83,49 @@ export default function Timer({
         <i className="ri-settings-3-line text-lg"></i>
       </button>
       
-      {showSettings && (
-        <>
-          <div className="fixed inset-0 z-10" onClick={() => setShowSettings(false)}></div>
-          <div className={`absolute right-0 top-10 mt-2 w-56 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-xl shadow-xl z-20 overflow-hidden border`}>
-            <div className={`px-4 py-3 ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-100'} border-b`}>
-              <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Settings</h3>
-            </div>
-            <div className="py-2">
-              <button className={`w-full px-4 py-2.5 text-left hover:${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex items-center justify-between`}>
-                <span className={`flex items-center gap-3 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                  <i className={`${darkMode ? 'ri-moon-fill' : 'ri-moon-line'} text-gray-500`}></i>
-                  Dark Mode
-                </span>
-                <ToggleSwitch enabled={darkMode} onToggle={onDarkModeToggle} />
-              </button>
-              <button className={`w-full px-4 py-2.5 text-left hover:${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex items-center justify-between`}>
-                <span className={`flex items-center gap-3 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                  <i className={`${timerEnabled ? 'ri-timer-fill' : 'ri-timer-line'} text-gray-500`}></i>
-                  Timer
-                </span>
-                <ToggleSwitch enabled={timerEnabled} onToggle={onTimerToggle} />
-              </button>
-              <button className={`w-full px-4 py-2.5 text-left hover:${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex items-center justify-between`}>
-                <span className={`flex items-center gap-3 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                  <i className={`${lightningMode ? 'ri-flashlight-fill' : 'ri-flashlight-line'} text-gray-500`}></i>
-                  Lightning Mode
-                </span>
-                <ToggleSwitch enabled={lightningMode} onToggle={onLightningModeToggle} />
-              </button>
+	      {showSettings && (
+	        <>
+	          <div className="fixed inset-0 z-10" onClick={() => setShowSettings(false)}></div>
+	          <div className={`absolute right-0 top-10 mt-2 w-56 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-xl shadow-xl z-20 overflow-hidden border`}>
+	            <div className={`px-4 py-3 ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-100'} border-b`}>
+	              <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Settings</h3>
+	            </div>
+	            <div className="py-2">
+	              <button className={`w-full px-4 py-2.5 text-left hover:${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex items-center justify-between`}>
+	                <span className={`flex items-center gap-3 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+	                  <i className={`${darkMode ? 'ri-moon-fill' : 'ri-moon-line'} text-gray-500`}></i>
+	                  Dark Mode
+	                </span>
+	                <ToggleSwitch enabled={darkMode} onToggle={onDarkModeToggle} />
+	              </button>
+	              <button className={`w-full px-4 py-2.5 text-left hover:${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex items-center justify-between`}>
+	                <span className={`flex items-center gap-3 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+	                  <i className={`${timerEnabled ? 'ri-timer-fill' : 'ri-timer-line'} text-gray-500`}></i>
+	                  Timer
+	                </span>
+	                <ToggleSwitch enabled={timerEnabled} onToggle={onTimerToggle} />
+	              </button>
+	              <button className={`w-full px-4 py-2.5 text-left hover:${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex items-center justify-between`}>
+	                <span className={`flex items-center gap-3 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+	                  <i className={`${soundEnabled ? 'ri-volume-up-fill' : 'ri-volume-mute-fill'} text-gray-500`}></i>
+	                  Sound
+	                </span>
+	                <ToggleSwitch enabled={soundEnabled} onToggle={onSoundToggle} />
+	              </button>
+	              <button className={`w-full px-4 py-2.5 text-left hover:${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex items-center justify-between`}>
+	                <span className={`flex items-center gap-3 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+	                  <i className={`${musicEnabled ? 'ri-music-2-fill' : 'ri-music-2-line'} text-gray-500`}></i>
+	                  Music
+	                </span>
+	                <ToggleSwitch enabled={musicEnabled} onToggle={onMusicToggle} />
+	              </button>
+	              <button className={`w-full px-4 py-2.5 text-left hover:${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex items-center justify-between`}>
+	                <span className={`flex items-center gap-3 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+	                  <i className={`${lightningMode ? 'ri-flashlight-fill' : 'ri-flashlight-line'} text-gray-500`}></i>
+	                  Lightning Mode
+	                </span>
+	                <ToggleSwitch enabled={lightningMode} onToggle={onLightningModeToggle} />
+	              </button>
               <button className={`w-full px-4 py-2.5 text-left hover:${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex items-center justify-between`}>
                 <span className={`flex items-center gap-3 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                   <i className={`${showMistakes ? 'ri-error-warning-fill' : 'ri-error-warning-line'} text-gray-500`}></i>
@@ -138,9 +160,16 @@ export default function Timer({
       )}
 
       <div className="flex items-center gap-3 ml-auto">
-        <div className="flex items-center gap-1">
-          <i className={`ri-error-warning-line ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}></i>
-          <span className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+        <div className="flex items-center gap-1.5">
+          <i
+            className={`ri-error-warning-line ${
+              mistakes > 0 ? 'text-red-500' : darkMode ? 'text-gray-400' : 'text-gray-500'
+            }`}
+          ></i>
+          <span className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+            Wrong
+          </span>
+          <span className={`text-sm font-semibold ${mistakes > 0 ? 'text-red-500' : darkMode ? 'text-gray-300' : 'text-gray-600'} tabular-nums`}>
             {mistakes}
           </span>
         </div>
