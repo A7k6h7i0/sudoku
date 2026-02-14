@@ -162,10 +162,39 @@ export function generatePuzzle(difficulty: 'easy' | 'medium' | 'hard'): {
   puzzleGrid: number[][];
   solutionGrid: number[][];
 } {
+  // Ultra-easy: leave exactly one empty cell per row (9 empties total).
+  if (difficulty === 'easy') {
+    for (let attempt = 0; attempt < 50; attempt++) {
+      const solutionGrid = generateSolvedGrid();
+      const puzzleGrid = solutionGrid.map((row) => [...row]);
+
+      for (let r = 0; r < 9; r++) {
+        const col = Math.floor(Math.random() * 9);
+        puzzleGrid[r][col] = 0;
+      }
+
+      // Keep uniqueness (should almost always pass with only 9 blanks, but verify).
+      const testGrid = puzzleGrid.map((r) => [...r]);
+      const solutions = countSolutions(testGrid, 2);
+      if (solutions === 1) {
+        return { puzzleGrid, solutionGrid };
+      }
+    }
+
+    // Fallback without uniqueness enforcement (very unlikely to hit).
+    const solutionGrid = generateSolvedGrid();
+    const puzzleGrid = solutionGrid.map((row) => [...row]);
+    for (let r = 0; r < 9; r++) {
+      const col = Math.floor(Math.random() * 9);
+      puzzleGrid[r][col] = 0;
+    }
+    return { puzzleGrid, solutionGrid };
+  }
+
   // Determine number of cells to remove
   // Fewer removals => easier. Keep "easy" noticeably easier while still leaving
   // enough blanks for play.
-  const cellsToRemove = difficulty === 'easy' ? 24 : difficulty === 'medium' ? 42 : 57;
+  const cellsToRemove = difficulty === 'medium' ? 42 : 57;
 
   // Requirement: every row and every column must have at least 2 empty cells.
   const minEmptyPerRowCol = 2;
