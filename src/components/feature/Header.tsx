@@ -4,9 +4,10 @@ interface HeaderProps {
   difficulty: 'easy' | 'medium' | 'hard';
   onDifficultyChange: (difficulty: 'easy' | 'medium' | 'hard') => void;
   onNewGame: () => void;
+  darkMode?: boolean;
 }
 
-export default function Header({ difficulty, onDifficultyChange, onNewGame }: HeaderProps) {
+export default function Header({ difficulty, onDifficultyChange, onNewGame, darkMode }: HeaderProps) {
   const [showMenu, setShowMenu] = useState(false);
 
   const handleDifficultyChange = (newDifficulty: 'easy' | 'medium' | 'hard') => {
@@ -18,22 +19,22 @@ export default function Header({ difficulty, onDifficultyChange, onNewGame }: He
   };
 
   return (
-    <header className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 py-4">
+    <header className={`w-full ${darkMode ? 'bg-gray-800' : 'bg-gradient-to-r from-teal-500 to-cyan-500'} shadow-lg`}>
+      <div className="max-w-7xl mx-auto px-3 py-2 md:px-4 md:py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img 
               src="https://public.readdy.ai/ai/img_res/d9de8a92-cd94-447f-9370-d5cd9c508124.png" 
               alt="JKV Sudoku Logo" 
-              className="w-12 h-12 rounded-lg shadow-md"
+              className="w-10 h-10 md:w-12 md:h-12 rounded-lg shadow-md"
             />
-            <h1 className="text-2xl md:text-3xl font-bold text-white">JKV Sudoku</h1>
+            <h1 className="text-xl md:text-3xl font-bold text-white">JKV Sudoku</h1>
           </div>
           
           <div className="relative">
             <button
               onClick={() => setShowMenu(!showMenu)}
-              className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition-all duration-200 backdrop-blur-sm"
+              className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-lg transition-all duration-200 backdrop-blur-sm"
             >
               <span className="capitalize font-medium">{difficulty}</span>
               <i className={`ri-arrow-down-s-line text-xl transition-transform ${showMenu ? 'rotate-180' : ''}`}></i>

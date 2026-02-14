@@ -29,8 +29,8 @@ export default function SudokuBoard({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div className="bg-white rounded-lg shadow-2xl p-2 md:p-4">
+    <div className="w-full max-w-xs mx-auto">
+      <div className="bg-white rounded-lg shadow-2xl p-1">
         <div className="grid grid-cols-9 gap-0 border-2 border-gray-800 rounded-lg overflow-hidden">
           {grid.map((row, rowIndex) =>
             row.map((cell, colIndex) => (

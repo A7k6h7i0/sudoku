@@ -28,6 +28,13 @@ interface GameState {
   time: number;
   isPaused: boolean;
   isWon: boolean;
+  // Settings
+  darkMode: boolean;
+  timerEnabled: boolean;
+  lightningMode: boolean;
+  autoNotes: boolean;
+  highlightRowCol: boolean;
+  autoRemoveNotes: boolean;
 }
 
 type SerializedCell = Omit<Cell, 'notes'> & { notes: number[] };
@@ -43,6 +50,12 @@ interface SavedGame {
   hintsLeft: number;
   history: unknown;
   historyIndex: number;
+  darkMode: boolean;
+  timerEnabled: boolean;
+  lightningMode: boolean;
+  autoNotes: boolean;
+  highlightRowCol: boolean;
+  autoRemoveNotes: boolean;
 }
 
 const getMaxHints = (diff: 'easy' | 'medium' | 'hard'): number => {
@@ -106,6 +119,12 @@ export default function HomePage() {
       hintsLeft: state.hintsLeft,
       history: state.history.map(serializeGrid),
       historyIndex: state.historyIndex,
+      darkMode: state.darkMode,
+      timerEnabled: state.timerEnabled,
+      lightningMode: state.lightningMode,
+      autoNotes: state.autoNotes,
+      highlightRowCol: state.highlightRowCol,
+      autoRemoveNotes: state.autoRemoveNotes,
     };
     localStorage.setItem('jkv-sudoku-save', JSON.stringify(savedGame));
   }, []);
@@ -129,6 +148,12 @@ export default function HomePage() {
       time: 0,
       isPaused: false,
       isWon: false,
+      darkMode: false,
+      timerEnabled: true,
+      lightningMode: false,
+      autoNotes: false,
+      highlightRowCol: true,
+      autoRemoveNotes: true,
     };
 
     setGameState(newState);
@@ -163,6 +188,12 @@ export default function HomePage() {
         time: savedGame.time,
         isPaused: false,
         isWon: false,
+        darkMode: savedGame.darkMode ?? false,
+        timerEnabled: savedGame.timerEnabled ?? true,
+        lightningMode: savedGame.lightningMode ?? false,
+        autoNotes: savedGame.autoNotes ?? false,
+        highlightRowCol: savedGame.highlightRowCol ?? true,
+        autoRemoveNotes: savedGame.autoRemoveNotes ?? true,
       });
 
       return true;
@@ -436,6 +467,30 @@ export default function HomePage() {
     });
   };
 
+  const toggleDarkMode = () => {
+    setGameState((prev) => prev ? { ...prev, darkMode: !prev.darkMode } : prev);
+  };
+
+  const toggleTimer = () => {
+    setGameState((prev) => prev ? { ...prev, timerEnabled: !prev.timerEnabled } : prev);
+  };
+
+  const toggleLightningMode = () => {
+    setGameState((prev) => prev ? { ...prev, lightningMode: !prev.lightningMode } : prev);
+  };
+
+  const toggleAutoNotes = () => {
+    setGameState((prev) => prev ? { ...prev, autoNotes: !prev.autoNotes } : prev);
+  };
+
+  const toggleHighlightRowCol = () => {
+    setGameState((prev) => prev ? { ...prev, highlightRowCol: !prev.highlightRowCol } : prev);
+  };
+
+  const toggleAutoRemoveNotes = () => {
+    setGameState((prev) => prev ? { ...prev, autoRemoveNotes: !prev.autoRemoveNotes } : prev);
+  };
+
   const formatTime = (seconds: number): string => {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
@@ -447,6 +502,20 @@ export default function HomePage() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const getNumberCounts = (): Record<number, number> => {
+    if (!gameState) return {};
+    const counts: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        const value = gameState.grid[r][c].value;
+        if (value !== null) {
+          counts[value] = (counts[value] || 0) + 1;
+        }
+      }
+    }
+    return counts;
+  };
+
   if (!gameState) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 to-cyan-50">
@@ -456,19 +525,18 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50">
+    <div className={`min-h-screen ${gameState.darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50'}`}>
       <Header
         difficulty={difficulty}
         onDifficultyChange={setDifficulty}
         onNewGame={() => initializeGame(difficulty)}
+        darkMode={gameState.darkMode}
       />
 
-      <main className="container mx-auto px-4 py-6 md:py-8">
+      <main className="container mx-auto px-1 py-2 md:py-2">
 	        <div className="max-w-6xl mx-auto">
-	          <Timer time={gameState.time} isPaused={gameState.isPaused} />
-
 	          {gameState.notesMode && !gameState.isPaused && !gameState.isWon ? (
-	            <div className="max-w-md mx-auto mt-3 mb-4 px-4 py-2 rounded-lg bg-teal-100 text-teal-800 text-sm font-medium flex items-center justify-between">
+	            <div className={`max-w-md mx-auto mt-2 mb-3 px-4 py-2 rounded-lg ${gameState.darkMode ? 'bg-teal-900 text-teal-200' : 'bg-teal-100 text-teal-800'} text-sm font-medium flex items-center justify-between`}>
 	              <span className="flex items-center gap-2">
 	                <i className="ri-pencil-line"></i>
 	                Notes mode is ON (press N to toggle)
@@ -484,8 +552,31 @@ export default function HomePage() {
 	            </div>
 	          ) : null}
 
-	          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-            <div>
+	          <div className="grid grid-cols-1 lg:grid-cols-3 gap-1 lg:gap-1">
+            <div className="lg:col-span-2">
+              <div className="flex justify-between items-center mb-1">
+                <Timer 
+                  time={gameState.time} 
+                  isPaused={gameState.isPaused} 
+                  mistakes={gameState.mistakes}
+                  showMistakes={gameState.showMistakes}
+                  onShowMistakesToggle={() =>
+                    setGameState((prev) => prev ? { ...prev, showMistakes: !prev.showMistakes } : prev)
+                  }
+                  darkMode={gameState.darkMode}
+                  onDarkModeToggle={toggleDarkMode}
+                  timerEnabled={gameState.timerEnabled}
+                  onTimerToggle={toggleTimer}
+                  lightningMode={gameState.lightningMode}
+                  onLightningModeToggle={toggleLightningMode}
+                  autoNotes={gameState.autoNotes}
+                  onAutoNotesToggle={toggleAutoNotes}
+                  highlightRowCol={gameState.highlightRowCol}
+                  onHighlightRowColToggle={toggleHighlightRowCol}
+                  autoRemoveNotes={gameState.autoRemoveNotes}
+                  onAutoRemoveNotesToggle={toggleAutoRemoveNotes}
+                />
+              </div>
               <SudokuBoard
                 grid={gameState.grid}
                 selectedCell={gameState.selectedCell}
@@ -498,20 +589,17 @@ export default function HomePage() {
               />
             </div>
 
-            <div>
+            <div className="flex flex-col gap-4">
               <ControlPanel
                 notesMode={gameState.notesMode}
-                showMistakes={gameState.showMistakes}
                 hintsLeft={gameState.hintsLeft}
                 isPaused={gameState.isPaused}
                 canUndo={gameState.historyIndex > 0}
                 canRedo={gameState.historyIndex < gameState.history.length - 1}
+                numberCounts={getNumberCounts()}
                 onNumberClick={handleNumberInput}
                 onNotesToggle={() =>
                   setGameState((prev) => prev ? { ...prev, notesMode: !prev.notesMode } : prev)
-                }
-                onShowMistakesToggle={() =>
-                  setGameState((prev) => prev ? { ...prev, showMistakes: !prev.showMistakes } : prev)
                 }
 	                onHint={handleHint}
 	                onUndo={handleUndo}
@@ -522,6 +610,7 @@ export default function HomePage() {
 	                onPauseToggle={() =>
 	                  setGameState((prev) => prev ? { ...prev, isPaused: !prev.isPaused } : prev)
 	                }
+                darkMode={gameState.darkMode}
               />
             </div>
           </div>

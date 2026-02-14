@@ -1,9 +1,47 @@
+import { useState } from 'react';
+
 interface TimerProps {
   time: number;
   isPaused: boolean;
+  mistakes?: number;
+  onShowMistakesToggle?: () => void;
+  showMistakes?: boolean;
+  // Settings
+  darkMode?: boolean;
+  onDarkModeToggle?: () => void;
+  timerEnabled?: boolean;
+  onTimerToggle?: () => void;
+  lightningMode?: boolean;
+  onLightningModeToggle?: () => void;
+  autoNotes?: boolean;
+  onAutoNotesToggle?: () => void;
+  highlightRowCol?: boolean;
+  onHighlightRowColToggle?: () => void;
+  autoRemoveNotes?: boolean;
+  onAutoRemoveNotesToggle?: () => void;
 }
 
-export default function Timer({ time, isPaused }: TimerProps) {
+export default function Timer({ 
+  time, 
+  isPaused, 
+  mistakes = 0, 
+  onShowMistakesToggle, 
+  showMistakes,
+  darkMode = false,
+  onDarkModeToggle,
+  timerEnabled = true,
+  onTimerToggle,
+  lightningMode = false,
+  onLightningModeToggle,
+  autoNotes = false,
+  onAutoNotesToggle,
+  highlightRowCol = true,
+  onHighlightRowColToggle,
+  autoRemoveNotes = true,
+  onAutoRemoveNotesToggle,
+}: TimerProps) {
+  const [showSettings, setShowSettings] = useState(false);
+  
   const formatTime = (seconds: number): string => {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
@@ -15,15 +53,109 @@ export default function Timer({ time, isPaused }: TimerProps) {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const ToggleSwitch = ({ enabled, onToggle }: { enabled: boolean; onToggle?: () => void }) => (
+    <div 
+      className={`w-10 h-5 rounded-full transition-colors cursor-pointer ${enabled ? 'bg-teal-500' : 'bg-gray-300'}`}
+      onClick={(e) => {
+        e.stopPropagation();
+        onToggle?.();
+      }}
+    >
+      <div className={`w-4 h-4 bg-white rounded-full shadow transform transition-transform mt-0.5 ${enabled ? 'translate-x-5' : 'translate-x-0.5'}`}></div>
+    </div>
+  );
+
   return (
-    <div className="flex items-center justify-center gap-2 bg-white rounded-lg shadow-lg px-6 py-3 mb-4">
-      <i className={`ri-time-line text-2xl ${isPaused ? 'text-red-500' : 'text-teal-500'}`}></i>
-      <span className="text-2xl font-bold text-gray-800 tabular-nums">
-        {formatTime(time)}
-      </span>
-      {isPaused && (
-        <span className="text-sm text-red-500 font-medium ml-2">PAUSED</span>
+    <div className="flex items-center gap-2">
+      <button
+        onClick={() => setShowSettings(!showSettings)}
+        className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
+        title="Settings"
+      >
+        <i className="ri-settings-3-line text-lg"></i>
+      </button>
+      
+      {showSettings && (
+        <>
+          <div className="fixed inset-0 z-10" onClick={() => setShowSettings(false)}></div>
+          <div className={`absolute right-0 top-10 mt-2 w-56 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-xl shadow-xl z-20 overflow-hidden border`}>
+            <div className={`px-4 py-3 ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-100'} border-b`}>
+              <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Settings</h3>
+            </div>
+            <div className="py-2">
+              <button className={`w-full px-4 py-2.5 text-left hover:${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex items-center justify-between`}>
+                <span className={`flex items-center gap-3 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                  <i className={`${darkMode ? 'ri-moon-fill' : 'ri-moon-line'} text-gray-500`}></i>
+                  Dark Mode
+                </span>
+                <ToggleSwitch enabled={darkMode} onToggle={onDarkModeToggle} />
+              </button>
+              <button className={`w-full px-4 py-2.5 text-left hover:${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex items-center justify-between`}>
+                <span className={`flex items-center gap-3 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                  <i className={`${timerEnabled ? 'ri-timer-fill' : 'ri-timer-line'} text-gray-500`}></i>
+                  Timer
+                </span>
+                <ToggleSwitch enabled={timerEnabled} onToggle={onTimerToggle} />
+              </button>
+              <button className={`w-full px-4 py-2.5 text-left hover:${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex items-center justify-between`}>
+                <span className={`flex items-center gap-3 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                  <i className={`${lightningMode ? 'ri-flashlight-fill' : 'ri-flashlight-line'} text-gray-500`}></i>
+                  Lightning Mode
+                </span>
+                <ToggleSwitch enabled={lightningMode} onToggle={onLightningModeToggle} />
+              </button>
+              <button className={`w-full px-4 py-2.5 text-left hover:${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex items-center justify-between`}>
+                <span className={`flex items-center gap-3 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                  <i className={`${showMistakes ? 'ri-error-warning-fill' : 'ri-error-warning-line'} text-gray-500`}></i>
+                  Show Mistakes
+                </span>
+                <ToggleSwitch enabled={showMistakes ?? false} onToggle={onShowMistakesToggle} />
+              </button>
+              <button className={`w-full px-4 py-2.5 text-left hover:${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex items-center justify-between`}>
+                <span className={`flex items-center gap-3 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                  <i className={`${autoNotes ? 'ri-checkbox-fill' : 'ri-checkbox-blank-line'} text-gray-500`}></i>
+                  Auto Notes
+                </span>
+                <ToggleSwitch enabled={autoNotes} onToggle={onAutoNotesToggle} />
+              </button>
+              <button className={`w-full px-4 py-2.5 text-left hover:${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex items-center justify-between`}>
+                <span className={`flex items-center gap-3 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                  <i className={`${highlightRowCol ? 'ri-layout-highlight-fill' : 'ri-layout-highlight-line'} text-gray-500`}></i>
+                  Highlight Row/Col
+                </span>
+                <ToggleSwitch enabled={highlightRowCol} onToggle={onHighlightRowColToggle} />
+              </button>
+              <button className={`w-full px-4 py-2.5 text-left hover:${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex items-center justify-between`}>
+                <span className={`flex items-center gap-3 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                  <i className={`${autoRemoveNotes ? 'ri-delete-back-fill' : 'ri-delete-back-line'} text-gray-500`}></i>
+                  Auto Remove Notes
+                </span>
+                <ToggleSwitch enabled={autoRemoveNotes} onToggle={onAutoRemoveNotesToggle} />
+              </button>
+            </div>
+          </div>
+        </>
       )}
+
+      <div className="flex items-center gap-3 ml-auto">
+        <div className="flex items-center gap-1">
+          <i className={`ri-error-warning-line ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}></i>
+          <span className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+            {mistakes}
+          </span>
+        </div>
+        {timerEnabled && (
+          <div className="flex items-center gap-2">
+            <i className={`ri-time-line ${isPaused ? 'text-red-500' : darkMode ? 'text-gray-400' : 'text-gray-500'}`}></i>
+            <span className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} tabular-nums`}>
+              {formatTime(time)}
+            </span>
+            {isPaused && (
+              <span className="text-xs text-red-500 font-medium ml-1">PAUSED</span>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
