@@ -38,15 +38,15 @@ export default function SudokuBoard({
   return (
     <div className="w-full max-w-xs sm:max-w-sm mx-auto">
       <div
-        className={`rounded-2xl p-[2px] shadow-2xl ${
+        className={`rounded-3xl p-[3px] shadow-2xl ${
           darkMode
             ? 'bg-gradient-to-br from-gray-700 via-gray-600 to-gray-500'
-            : 'bg-gradient-to-br from-teal-500 via-cyan-500 to-blue-500'
+            : 'bg-gradient-to-br from-cyan-500 via-teal-500 to-indigo-500'
         }`}
       >
-        <div className={`${darkMode ? 'bg-gray-900' : 'bg-[#FFF7E6]'} rounded-[14px] p-1`}>
+        <div className={`${darkMode ? 'bg-gray-900' : 'bg-[#FFF9EE]'} rounded-[20px] p-1.5`}>
           <div
-            className="grid grid-cols-9 gap-0 rounded-xl overflow-hidden"
+            className="grid grid-cols-9 gap-0 rounded-2xl overflow-hidden"
           >
           {grid.map((row, rowIndex) =>
             row.map((cell, colIndex) => {

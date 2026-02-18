@@ -36,22 +36,22 @@ export default function ControlPanel({
   darkMode,
 }: ControlPanelProps) {
   return (
-    <div className="w-full max-w-xs sm:max-w-sm mx-auto space-y-1 md:space-y-2">
+    <div className="w-full max-w-xs sm:max-w-sm mx-auto space-y-2 md:space-y-3">
       {/* Action Buttons Row */}
-      <div className={`${darkMode ? 'bg-gray-800' : 'bg-[#F3F4F6]'} rounded-lg p-1.5 md:p-2`}>
-        <div className="flex justify-center gap-1.5 md:gap-3">
+      <div className={`${darkMode ? 'bg-gray-800 shadow-lg shadow-black/20' : 'bg-gradient-to-br from-cyan-50 via-white to-blue-50 border border-cyan-100 shadow-lg shadow-cyan-200/40'} rounded-2xl p-2 md:p-3`}>
+        <div className="flex justify-center gap-2 md:gap-3">
           {/* Undo Button */}
           <button
             onClick={onUndo}
             disabled={!canUndo}
             className={`
-              flex flex-col items-center gap-0.5 w-10 md:w-14
+              flex flex-col items-center gap-1 w-12 md:w-14
               transition-all duration-200 active:scale-95
               ${canUndo ? (darkMode ? 'text-gray-300 hover:text-[#3B5BDB]' : 'text-gray-600 hover:text-[#3B5BDB]') : (darkMode ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 cursor-not-allowed')}
             `}
           >
-            <i className={`ri-arrow-go-back-line text-2xl md:text-2xl ${canUndo ? (darkMode ? 'text-gray-300' : 'text-gray-600') : (darkMode ? 'text-gray-600' : 'text-gray-300')}`}></i>
-            <span className={`text-sm ${canUndo ? (darkMode ? 'text-gray-300' : 'text-gray-600') : (darkMode ? 'text-gray-600' : 'text-gray-300')}`}>Undo</span>
+            <i className={`ri-arrow-go-back-line text-[26px] md:text-[28px] ${canUndo ? (darkMode ? 'text-gray-300' : 'text-gray-700') : (darkMode ? 'text-gray-600' : 'text-gray-300')}`}></i>
+            <span className={`text-[15px] md:text-base font-medium ${canUndo ? (darkMode ? 'text-gray-300' : 'text-gray-700') : (darkMode ? 'text-gray-600' : 'text-gray-300')}`}>Undo</span>
           </button>
 
           {/* Redo Button */}
@@ -59,35 +59,35 @@ export default function ControlPanel({
             onClick={onRedo}
             disabled={!canRedo}
             className={`
-              flex flex-col items-center gap-0.5 w-10 md:w-14
+              flex flex-col items-center gap-1 w-12 md:w-14
               transition-all duration-200 active:scale-95
               ${canRedo ? (darkMode ? 'text-gray-300 hover:text-[#3B5BDB]' : 'text-gray-600 hover:text-[#3B5BDB]') : (darkMode ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 cursor-not-allowed')}
             `}
           >
-            <i className={`ri-arrow-go-forward-line text-2xl md:text-2xl ${canRedo ? (darkMode ? 'text-gray-300' : 'text-gray-600') : (darkMode ? 'text-gray-600' : 'text-gray-300')}`}></i>
-            <span className={`text-sm ${canRedo ? (darkMode ? 'text-gray-300' : 'text-gray-600') : (darkMode ? 'text-gray-600' : 'text-gray-300')}`}>Redo</span>
+            <i className={`ri-arrow-go-forward-line text-[26px] md:text-[28px] ${canRedo ? (darkMode ? 'text-gray-300' : 'text-gray-700') : (darkMode ? 'text-gray-600' : 'text-gray-300')}`}></i>
+            <span className={`text-[15px] md:text-base font-medium ${canRedo ? (darkMode ? 'text-gray-300' : 'text-gray-700') : (darkMode ? 'text-gray-600' : 'text-gray-300')}`}>Redo</span>
           </button>
 
           {/* Erase/Clear Button */}
           <button
             onClick={onClear}
-            className={`flex flex-col items-center gap-0.5 w-10 md:w-14 ${darkMode ? 'text-gray-300 hover:text-[#3B5BDB]' : 'text-gray-600 hover:text-[#3B5BDB]'} transition-all duration-200 active:scale-95`}
+            className={`flex flex-col items-center gap-1 w-12 md:w-14 ${darkMode ? 'text-gray-300 hover:text-[#3B5BDB]' : 'text-gray-700 hover:text-[#3B5BDB]'} transition-all duration-200 active:scale-95`}
           >
-            <i className={`ri-eraser-line text-2xl md:text-2xl ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}></i>
-            <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Erase</span>
+            <i className={`ri-eraser-line text-[26px] md:text-[28px] ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}></i>
+            <span className={`text-[15px] md:text-base font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Erase</span>
           </button>
 
           {/* Pencil/Notes Button */}
           <button
             onClick={onNotesToggle}
             className={`
-              flex flex-col items-center gap-0.5 w-10 md:w-14
+              flex flex-col items-center gap-1 w-12 md:w-14
               transition-all duration-200 active:scale-95
-              ${notesMode ? 'text-[#3B5BDB]' : (darkMode ? 'text-gray-300 hover:text-[#3B5BDB]' : 'text-gray-600 hover:text-[#3B5BDB]')}
+              ${notesMode ? 'text-[#3B5BDB]' : (darkMode ? 'text-gray-300 hover:text-[#3B5BDB]' : 'text-gray-700 hover:text-[#3B5BDB]')}
             `}
           >
-            <i className={`ri-pencil-line text-2xl md:text-2xl ${notesMode ? 'text-[#3B5BDB]' : (darkMode ? 'text-gray-300' : 'text-gray-600')}`}></i>
-            <span className={`text-sm ${notesMode ? 'text-[#3B5BDB]' : (darkMode ? 'text-gray-300' : 'text-gray-600')}`}>Pencil</span>
+            <i className={`ri-pencil-line text-[26px] md:text-[28px] ${notesMode ? 'text-[#3B5BDB]' : (darkMode ? 'text-gray-300' : 'text-gray-700')}`}></i>
+            <span className={`text-[15px] md:text-base font-medium ${notesMode ? 'text-[#3B5BDB]' : (darkMode ? 'text-gray-300' : 'text-gray-700')}`}>Pencil</span>
           </button>
 
           {/* Hint Button */}
@@ -95,27 +95,27 @@ export default function ControlPanel({
             onClick={onHint}
             disabled={hintsLeft === 0}
             className={`
-              flex flex-col items-center gap-0.5 w-10 md:w-14
+              flex flex-col items-center gap-1 w-12 md:w-14
               transition-all duration-200 active:scale-95
               ${hintsLeft === 0 ? (darkMode ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 cursor-not-allowed') : (darkMode ? 'text-gray-300 hover:text-[#3B5BDB]' : 'text-gray-600 hover:text-[#3B5BDB]')}
             `}
           >
             <div className="relative">
-              <i className={`ri-lightbulb-line text-2xl md:text-2xl ${hintsLeft === 0 ? (darkMode ? 'text-gray-600' : 'text-gray-300') : (darkMode ? 'text-gray-300' : 'text-gray-600')}`}></i>
+              <i className={`ri-lightbulb-line text-[26px] md:text-[28px] ${hintsLeft === 0 ? (darkMode ? 'text-gray-600' : 'text-gray-300') : (darkMode ? 'text-gray-300' : 'text-gray-700')}`}></i>
               {hintsLeft > 0 && (
-                <span className="absolute -top-1 -right-2 w-4 h-4 bg-[#3B5BDB] text-white text-xs rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-2 min-w-5 h-5 px-1 bg-[#3B5BDB] text-white text-[11px] font-semibold rounded-full flex items-center justify-center">
                   {hintsLeft}
                 </span>
               )}
             </div>
-            <span className={`text-sm ${hintsLeft === 0 ? (darkMode ? 'text-gray-600' : 'text-gray-300') : (darkMode ? 'text-gray-300' : 'text-gray-600')}`}>Hint</span>
+            <span className={`text-[15px] md:text-base font-medium ${hintsLeft === 0 ? (darkMode ? 'text-gray-600' : 'text-gray-300') : (darkMode ? 'text-gray-300' : 'text-gray-700')}`}>Hint</span>
           </button>
         </div>
       </div>
 
       {/* Number Pad - Horizontal Row */}
-      <div className={`${darkMode ? 'bg-gray-800' : 'bg-[#F3F4F6]'} rounded-lg p-1.5 md:p-2`}>
-        <div className="grid grid-cols-9 gap-1 md:gap-2 w-full">
+      <div className={`${darkMode ? 'bg-gray-800 shadow-lg shadow-black/20' : 'bg-gradient-to-br from-cyan-50 via-white to-indigo-50 border border-cyan-100 shadow-lg shadow-cyan-200/40'} rounded-2xl p-2 md:p-3`}>
+        <div className="grid grid-cols-9 gap-1.5 md:gap-2 w-full">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => {
             const count = numberCounts[num] || 0;
             const isDisabled = count >= 9;
@@ -126,22 +126,19 @@ export default function ControlPanel({
                 onClick={() => onNumberClick(num)}
                 disabled={isDisabled}
                 className={`
-                  w-full aspect-square max-w-[36px] md:max-w-[40px] mx-auto rounded-lg flex flex-col items-center justify-center
+                  w-full aspect-square max-w-[42px] md:max-w-[44px] mx-auto rounded-xl flex items-center justify-center
                   transition-all duration-200 active:scale-95
                   ${isDisabled 
                     ? (darkMode ? 'bg-gray-700 cursor-not-allowed opacity-50' : 'bg-gray-100 cursor-not-allowed opacity-50') 
-                    : (darkMode ? 'bg-gray-700 border border-gray-600 hover:bg-[#E7F0FF] hover:border-[#3B5BDB]/30' : 'bg-white shadow-[0px_2px_6px_rgba(0,0,0,0.08)] border border-gray-200 hover:bg-[#E7F0FF] hover:border-[#3B5BDB]/30')
+                    : (darkMode ? 'bg-gray-700 border border-gray-600 hover:bg-[#E7F0FF] hover:border-[#3B5BDB]/40' : 'bg-gradient-to-br from-white to-cyan-50 shadow-[0px_5px_14px_rgba(8,71,137,0.18)] border border-cyan-100 hover:from-cyan-100 hover:to-blue-50 hover:border-cyan-300')
                   }
                 `}
               >
                 <span 
-                  className={`text-lg md:text-xl font-semibold ${isDisabled ? 'text-gray-500' : 'text-[#3B5BDB]'}`}
+                  className={`text-2xl md:text-[28px] leading-none font-bold ${isDisabled ? 'text-gray-500' : 'text-[#0E4FA8]'}`}
                 >
                   {num}
                 </span>
-                {!isDisabled && count > 0 && (
-                  <span className="text-[10px] text-gray-400">{count}</span>
-                )}
               </button>
             );
           })}
@@ -149,10 +146,10 @@ export default function ControlPanel({
       </div>
 
       {/* Secondary Actions Row */}
-      <div className="flex justify-center gap-2">
+      <div className="flex justify-center gap-2.5">
         <button
           onClick={onPauseToggle}
-          className={`px-2.5 py-1 md:px-3 md:py-1.5 ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-300 border-gray-600' : 'bg-gray-100 hover:bg-gray-200 text-gray-600 border-gray-200'} rounded-sm text-sm font-medium border transition-all duration-200`}
+          className={`px-3 py-1.5 md:px-3 md:py-1.5 ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200 border-gray-600' : 'bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 text-gray-800 border-slate-300'} rounded-md text-[15px] md:text-base font-semibold border transition-all duration-200`}
         >
           <i className={`${isPaused ? 'ri-play-line' : 'ri-pause-line'} mr-1`}></i>
           {isPaused ? 'Resume' : 'Pause'}
@@ -160,7 +157,7 @@ export default function ControlPanel({
 
         <button
           onClick={onRestart}
-          className={`px-2.5 py-1 md:px-3 md:py-1.5 ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-300 border-gray-600' : 'bg-gray-100 hover:bg-gray-200 text-gray-600 border-gray-200'} rounded-sm text-sm font-medium border transition-all duration-200`}
+          className={`px-3 py-1.5 md:px-3 md:py-1.5 ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200 border-gray-600' : 'bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 text-gray-800 border-slate-300'} rounded-md text-[15px] md:text-base font-semibold border transition-all duration-200`}
         >
           <i className="ri-restart-line mr-1"></i>
           Restart
@@ -168,7 +165,7 @@ export default function ControlPanel({
 
         <button
           onClick={onNewGame}
-          className={`px-2.5 py-1 md:px-3 md:py-1.5 bg-[#3B5BDB] hover:bg-[#2E4AC4] text-white rounded-sm text-sm font-medium shadow-md hover:shadow-lg transition-all duration-200`}
+          className={`px-3 py-1.5 md:px-3 md:py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white rounded-md text-[15px] md:text-base font-semibold shadow-md hover:shadow-lg transition-all duration-200`}
         >
           <i className="ri-refresh-line mr-1"></i>
           New

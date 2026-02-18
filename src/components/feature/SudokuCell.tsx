@@ -42,23 +42,23 @@ export default function SudokuCell({
         ? 'bg-gray-800'
         : 'bg-gray-900/60'
       : isBoxShaded
-        ? 'bg-[#FFF0D6]'
-        : 'bg-[#FFF7E6]';
+        ? 'bg-[#F3E8D1]'
+        : 'bg-[#FBF3E2]';
     
     if (isSelected) {
-      classes.push(darkMode ? 'bg-teal-900/60 ring-2 ring-teal-400' : 'bg-teal-200 ring-2 ring-teal-500');
+      classes.push(darkMode ? 'bg-cyan-900/60 ring-2 ring-cyan-400' : 'bg-cyan-200 ring-2 ring-cyan-500');
     } else if (showMistakes && isIncorrect) {
       classes.push(darkMode ? 'bg-red-900/40 ring-1 ring-red-500' : 'bg-red-100 ring-1 ring-red-500');
     } else if (isSameNumber) {
-      classes.push(darkMode ? 'bg-teal-900/25' : 'bg-teal-100');
+      classes.push(darkMode ? 'bg-cyan-900/25' : 'bg-cyan-100');
     } else if (isHighlighted) {
-      classes.push(darkMode ? 'bg-gray-800/80' : 'bg-gray-100');
+      classes.push(darkMode ? 'bg-gray-800/80' : 'bg-amber-100/70');
     } else {
-      classes.push(`${baseBg} ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-50'}`);
+      classes.push(`${baseBg} ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-[#F1E5CD]'}`);
     }
 
-    const strongBorder = darkMode ? 'border-gray-500' : 'border-gray-800';
-    const weakBorder = darkMode ? 'border-gray-700' : 'border-gray-400';
+    const strongBorder = darkMode ? 'border-gray-500' : 'border-[#27446B]';
+    const weakBorder = darkMode ? 'border-gray-700' : 'border-[#6B7E99]';
 
     // Vertical borders
     if (isRightBorder || isLastCol) {
@@ -87,11 +87,11 @@ export default function SudokuCell({
     const classes = ['text-2xl md:text-3xl font-semibold'];
     
     if (cell.given) {
-      classes.push(darkMode ? 'text-gray-100 font-bold' : 'text-gray-900 font-bold');
+      classes.push(darkMode ? 'text-gray-100 font-bold' : 'text-[#082547] font-bold');
     } else if (showMistakes && (cell.conflict || isIncorrect)) {
       classes.push('text-red-600 font-bold');
     } else {
-      classes.push(darkMode ? 'text-teal-300' : 'text-teal-600');
+      classes.push(darkMode ? 'text-cyan-300' : 'text-[#1170D8]');
     }
 
     return classes.join(' ');

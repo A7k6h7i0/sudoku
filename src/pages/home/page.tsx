@@ -687,14 +687,20 @@ export default function HomePage() {
 
   if (!gameState) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 to-cyan-50">
-        <div className="text-2xl font-semibold text-teal-600">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cyan-100 via-sky-50 to-indigo-100">
+        <div className="text-2xl font-semibold text-cyan-700">Loading...</div>
       </div>
     );
   }
 
 	  return (
-	    <div className={`min-h-screen ${gameState.darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50'}`}>
+	    <div className={`min-h-screen relative overflow-hidden ${gameState.darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-cyan-100 via-sky-50 to-indigo-100'}`}>
+        {!gameState.darkMode && (
+          <>
+            <div className="pointer-events-none absolute -top-24 -left-20 h-56 w-56 rounded-full bg-cyan-300/30 blur-3xl"></div>
+            <div className="pointer-events-none absolute top-44 -right-20 h-60 w-60 rounded-full bg-blue-300/25 blur-3xl"></div>
+          </>
+        )}
 	      <Header
 	        difficulty={difficulty}
 	        onDifficultyChange={handleDifficultyChange}
@@ -704,13 +710,13 @@ export default function HomePage() {
       <main className="container mx-auto px-2 py-1 md:px-1 md:py-2">
 		        <div className="max-w-6xl mx-auto">
 			          {gameState.notesMode && !gameState.isPaused && !gameState.isWon ? (
-			            <div className={`max-w-md mx-auto mt-1 mb-2 px-3 py-1.5 md:mt-2 md:mb-3 md:px-4 md:py-2 rounded-lg ${gameState.darkMode ? 'bg-teal-900 text-teal-200' : 'bg-teal-100 text-teal-800'} text-base font-medium flex items-center justify-between`}>
+			            <div className={`max-w-md mx-auto mt-1 mb-2 px-3 py-1.5 md:mt-2 md:mb-3 md:px-4 md:py-2 rounded-xl ${gameState.darkMode ? 'bg-teal-900 text-teal-200' : 'bg-gradient-to-r from-cyan-100 to-blue-100 text-cyan-900 border border-cyan-200 shadow-sm'} text-base font-medium flex items-center justify-between`}>
 			              <span className="flex items-center gap-2">
 			                <i className="ri-pencil-line"></i>
 			                Notes mode is ON (press N to toggle)
 			              </span>
 	              <button
-	                className="text-teal-800/80 hover:text-teal-900 underline"
+	                className="text-cyan-800/90 hover:text-cyan-900 underline"
 	                onClick={() =>
 	                  setGameState((prev) => (prev ? { ...prev, notesMode: false } : prev))
 	                }
