@@ -36,7 +36,7 @@ export default function ControlPanel({
   darkMode,
 }: ControlPanelProps) {
   return (
-    <div className="w-full max-w-xs sm:max-w-sm mx-auto space-y-2 md:space-y-3">
+    <div className="w-full max-w-sm mx-auto space-y-2 md:space-y-3">
       {/* Action Buttons Row */}
       <div className={`${darkMode ? 'bg-gray-800 shadow-lg shadow-black/20' : 'bg-gradient-to-br from-cyan-50 via-white to-blue-50 border border-cyan-100 shadow-lg shadow-cyan-200/40'} rounded-2xl p-2 md:p-3`}>
         <div className="flex justify-center gap-2 md:gap-3">
@@ -135,7 +135,7 @@ export default function ControlPanel({
                 `}
               >
                 <span 
-                  className={`text-[30px] md:text-[28px] leading-none font-bold ${isDisabled ? 'text-gray-500' : 'text-[#0E4FA8]'}`}
+                  className={`text-[32px] md:text-[30px] leading-none font-bold ${isDisabled ? 'text-gray-500' : 'text-[#0E4FA8]'}`}
                 >
                   {num}
                 </span>
