@@ -126,7 +126,7 @@ export default function ControlPanel({
                 onClick={() => onNumberClick(num)}
                 disabled={isDisabled}
                 className={`
-                  w-full aspect-square max-w-[42px] md:max-w-[44px] mx-auto rounded-xl flex items-center justify-center
+                  w-full aspect-square max-w-[46px] md:max-w-[44px] mx-auto rounded-xl flex items-center justify-center
                   transition-all duration-200 active:scale-95
                   ${isDisabled 
                     ? (darkMode ? 'bg-gray-700 cursor-not-allowed opacity-50' : 'bg-gray-100 cursor-not-allowed opacity-50') 
@@ -135,7 +135,7 @@ export default function ControlPanel({
                 `}
               >
                 <span 
-                  className={`text-2xl md:text-[28px] leading-none font-bold ${isDisabled ? 'text-gray-500' : 'text-[#0E4FA8]'}`}
+                  className={`text-[30px] md:text-[28px] leading-none font-bold ${isDisabled ? 'text-gray-500' : 'text-[#0E4FA8]'}`}
                 >
                   {num}
                 </span>
