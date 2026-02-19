@@ -22,7 +22,7 @@ export default function Header({ difficulty, onDifficultyChange, darkMode }: Hea
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img 
-              src="https://public.readdy.ai/ai/img_res/d9de8a92-cd94-447f-9370-d5cd9c508124.png" 
+              src="/jkv-logo.jpeg" 
               alt="JKV Sudoku Logo" 
               className="w-10 h-10 md:w-12 md:h-12 rounded-lg shadow-md"
             />
@@ -78,3 +78,4 @@ export default function Header({ difficulty, onDifficultyChange, darkMode }: Hea
     </header>
   );
 }
+
