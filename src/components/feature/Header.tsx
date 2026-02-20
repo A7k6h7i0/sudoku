@@ -26,7 +26,7 @@ export default function Header({ difficulty, onDifficultyChange, darkMode }: Hea
               alt="JKV Sudoku Logo" 
               className="w-12 h-12 md:w-12 md:h-12 rounded-lg shadow-md"
             />
-            <h1 className="text-4xl md:text-4xl font-bold text-white">JKV Sudoku</h1>
+            <h1 className="text-4xl md:text-4xl font-bold text-white whitespace-nowrap">JKV Sudoku</h1>
           </div>
           
           <div className="relative">
