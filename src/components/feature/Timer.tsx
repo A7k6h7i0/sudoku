@@ -74,10 +74,10 @@ export default function Timer({
   );
 
 	  return (
-	    <div className={`flex items-center gap-3 rounded-xl px-3 py-2 ${darkMode ? 'bg-gray-800/70' : 'bg-white/75 border border-cyan-100 shadow-md shadow-cyan-200/40'} backdrop-blur-sm`}>
+	    <div className={`flex items-center gap-2.5 rounded-xl px-2.5 py-1.5 ${darkMode ? 'bg-gray-800/70' : 'bg-white/75 border border-cyan-100 shadow-md shadow-cyan-200/40'} backdrop-blur-sm`}>
 	      <button
 	        onClick={() => setShowSettings(!showSettings)}
-	        className="p-2.5 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white transition-colors shadow-md"
+	        className="p-2 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white transition-colors shadow-md"
 	        title="Settings"
 	      >
 	        <i className="ri-settings-3-line text-3xl"></i>
@@ -159,7 +159,7 @@ export default function Timer({
         </>
       )}
 
-	      <div className="flex items-center gap-4 ml-auto">
+	      <div className="flex items-center gap-3 ml-auto">
 	        <div className="flex items-center gap-2">
 	          <i
 	            className={`ri-error-warning-line text-2xl ${

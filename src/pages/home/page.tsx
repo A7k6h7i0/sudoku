@@ -707,7 +707,7 @@ export default function HomePage() {
 	        darkMode={gameState.darkMode}
 	      />
 
-      <main className="container mx-auto px-1 py-1 md:px-1 md:py-2">
+      <main className="container mx-auto px-1 py-0.5 md:px-1 md:py-2">
 		        <div className="max-w-6xl mx-auto">
 			          {gameState.notesMode && !gameState.isPaused && !gameState.isWon ? (
 			            <div className={`max-w-md mx-auto mt-1 mb-2 px-3 py-1.5 md:mt-2 md:mb-3 md:px-4 md:py-2 rounded-xl ${gameState.darkMode ? 'bg-teal-900 text-teal-200' : 'bg-gradient-to-r from-cyan-100 to-blue-100 text-cyan-900 border border-cyan-200 shadow-sm'} text-lg font-medium flex items-center justify-between`}>
@@ -726,9 +726,9 @@ export default function HomePage() {
 	            </div>
 	          ) : null}
 
-		          <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-1">
+		          <div className="grid grid-cols-1 lg:grid-cols-3 gap-1 lg:gap-1">
 	            <div className="lg:col-span-2">
-	              <div className="w-full max-w-[98vw] sm:max-w-[38rem] mx-auto mb-1 relative">
+	              <div className="w-full max-w-[98vw] sm:max-w-[38rem] mx-auto mb-0.5 relative">
 	                <Timer 
 	                  time={gameState.time} 
 	                  isPaused={gameState.isPaused} 
@@ -770,7 +770,7 @@ export default function HomePage() {
 	              />
 	            </div>
 
-	            <div className="flex flex-col gap-2 md:gap-4">
+	            <div className="flex flex-col gap-1.5 md:gap-4">
 	              <ControlPanel
 	                notesMode={gameState.notesMode}
 	                hintsLeft={gameState.hintsLeft}

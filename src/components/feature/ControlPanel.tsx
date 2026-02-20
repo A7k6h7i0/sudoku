@@ -36,9 +36,9 @@ export default function ControlPanel({
   darkMode,
 }: ControlPanelProps) {
   return (
-    <div className="w-full max-w-[98vw] sm:max-w-sm mx-auto space-y-3 md:space-y-3">
+    <div className="w-full max-w-[98vw] sm:max-w-sm mx-auto space-y-2 md:space-y-3">
       {/* Action Buttons Row */}
-      <div className={`${darkMode ? 'bg-gray-800 shadow-lg shadow-black/20' : 'bg-gradient-to-br from-cyan-50 via-white to-blue-50 border border-cyan-100 shadow-lg shadow-cyan-200/40'} rounded-2xl p-3 md:p-3`}>
+      <div className={`${darkMode ? 'bg-gray-800 shadow-lg shadow-black/20' : 'bg-gradient-to-br from-cyan-50 via-white to-blue-50 border border-cyan-100 shadow-lg shadow-cyan-200/40'} rounded-2xl p-2.5 md:p-3`}>
         <div className="flex justify-center gap-2.5 md:gap-3">
           {/* Undo Button */}
           <button
@@ -114,7 +114,7 @@ export default function ControlPanel({
       </div>
 
       {/* Number Pad - Horizontal Row */}
-      <div className={`${darkMode ? 'bg-gray-800 shadow-lg shadow-black/20' : 'bg-gradient-to-br from-cyan-50 via-white to-indigo-50 border border-cyan-100 shadow-lg shadow-cyan-200/40'} rounded-2xl p-3 md:p-3`}>
+      <div className={`${darkMode ? 'bg-gray-800 shadow-lg shadow-black/20' : 'bg-gradient-to-br from-cyan-50 via-white to-indigo-50 border border-cyan-100 shadow-lg shadow-cyan-200/40'} rounded-2xl p-2.5 md:p-3`}>
         <div className="grid grid-cols-9 gap-1.5 md:gap-2 w-full">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => {
             const count = numberCounts[num] || 0;
@@ -149,7 +149,7 @@ export default function ControlPanel({
       <div className="flex justify-center gap-2.5">
         <button
           onClick={onPauseToggle}
-          className={`px-3 py-2 md:px-3 md:py-1.5 ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200 border-gray-600' : 'bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 text-gray-800 border-slate-300'} rounded-md text-[1.2rem] md:text-base font-semibold border transition-all duration-200`}
+          className={`px-3 py-1.5 md:px-3 md:py-1.5 ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200 border-gray-600' : 'bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 text-gray-800 border-slate-300'} rounded-md text-[1.2rem] md:text-base font-semibold border transition-all duration-200`}
         >
           <i className={`${isPaused ? 'ri-play-line' : 'ri-pause-line'} mr-1`}></i>
           {isPaused ? 'Resume' : 'Pause'}
@@ -157,7 +157,7 @@ export default function ControlPanel({
 
         <button
           onClick={onRestart}
-          className={`px-3 py-2 md:px-3 md:py-1.5 ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200 border-gray-600' : 'bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 text-gray-800 border-slate-300'} rounded-md text-[1.2rem] md:text-base font-semibold border transition-all duration-200`}
+          className={`px-3 py-1.5 md:px-3 md:py-1.5 ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200 border-gray-600' : 'bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 text-gray-800 border-slate-300'} rounded-md text-[1.2rem] md:text-base font-semibold border transition-all duration-200`}
         >
           <i className="ri-restart-line mr-1"></i>
           Restart
@@ -165,7 +165,7 @@ export default function ControlPanel({
 
         <button
           onClick={onNewGame}
-          className={`px-3 py-2 md:px-3 md:py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white rounded-md text-[1.2rem] md:text-base font-semibold shadow-md hover:shadow-lg transition-all duration-200`}
+          className={`px-3 py-1.5 md:px-3 md:py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white rounded-md text-[1.2rem] md:text-base font-semibold shadow-md hover:shadow-lg transition-all duration-200`}
         >
           <i className="ri-refresh-line mr-1"></i>
           New

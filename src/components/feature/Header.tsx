@@ -18,7 +18,7 @@ export default function Header({ difficulty, onDifficultyChange, darkMode }: Hea
 
   return (
     <header className={`w-full ${darkMode ? 'bg-gray-800' : 'bg-gradient-to-r from-cyan-500 via-teal-500 to-blue-500'} shadow-xl`}>
-      <div className="max-w-7xl mx-auto px-3 py-2.5 md:px-4 md:py-4">
+      <div className="max-w-7xl mx-auto px-3 py-1.5 md:px-4 md:py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img 

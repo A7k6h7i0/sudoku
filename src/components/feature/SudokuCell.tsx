@@ -84,12 +84,12 @@ export default function SudokuCell({
   };
 
   const getValueClasses = () => {
-    const classes = ['text-[2.2rem] sm:text-[2.45rem] md:text-3xl font-semibold'];
+    const classes = ['text-[2.2rem] sm:text-[2.45rem] md:text-3xl font-medium'];
     
     if (cell.given) {
-      classes.push(darkMode ? 'text-gray-100 font-bold' : 'text-[#082547] font-bold');
+      classes.push(darkMode ? 'text-gray-100 font-semibold' : 'text-[#082547] font-semibold');
     } else if (showMistakes && (cell.conflict || isIncorrect)) {
-      classes.push('text-red-600 font-bold');
+      classes.push('text-red-600 font-semibold');
     } else {
       classes.push(darkMode ? 'text-cyan-300' : 'text-[#1170D8]');
     }
