@@ -36,7 +36,7 @@ export default function SudokuBoard({
   };
 
   return (
-    <div className="w-full max-w-xs sm:max-w-sm mx-auto">
+    <div className="w-full max-w-[98vw] sm:max-w-[38rem] mx-auto">
       <div
         className={`rounded-3xl p-[3px] shadow-2xl ${
           darkMode

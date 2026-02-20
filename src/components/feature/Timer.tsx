@@ -74,13 +74,13 @@ export default function Timer({
   );
 
 	  return (
-	    <div className={`flex items-center gap-2.5 rounded-xl px-2 py-1.5 ${darkMode ? 'bg-gray-800/70' : 'bg-white/75 border border-cyan-100 shadow-md shadow-cyan-200/40'} backdrop-blur-sm`}>
+	    <div className={`flex items-center gap-3 rounded-xl px-3 py-2 ${darkMode ? 'bg-gray-800/70' : 'bg-white/75 border border-cyan-100 shadow-md shadow-cyan-200/40'} backdrop-blur-sm`}>
 	      <button
 	        onClick={() => setShowSettings(!showSettings)}
-	        className="p-2 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white transition-colors shadow-md"
+	        className="p-2.5 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white transition-colors shadow-md"
 	        title="Settings"
 	      >
-	        <i className="ri-settings-3-line text-2xl"></i>
+	        <i className="ri-settings-3-line text-3xl"></i>
 	      </button>
       
 	      {showSettings && (
@@ -159,28 +159,28 @@ export default function Timer({
         </>
       )}
 
-	      <div className="flex items-center gap-3 ml-auto">
+	      <div className="flex items-center gap-4 ml-auto">
 	        <div className="flex items-center gap-2">
 	          <i
-	            className={`ri-error-warning-line text-lg ${
+	            className={`ri-error-warning-line text-2xl ${
 	              mistakes > 0 ? 'text-red-500' : darkMode ? 'text-gray-400' : 'text-gray-500'
 	            }`}
 	          ></i>
-	          <span className={`text-base font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+	          <span className={`text-[1.45rem] font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
 	            Wrong
 	          </span>
-	          <span className={`text-lg font-bold ${mistakes > 0 ? 'text-red-500' : darkMode ? 'text-gray-200' : 'text-gray-700'} tabular-nums`}>
+	          <span className={`text-[1.7rem] font-bold ${mistakes > 0 ? 'text-red-500' : darkMode ? 'text-gray-200' : 'text-gray-700'} tabular-nums`}>
 	            {mistakes}
 	          </span>
 	        </div>
 	        {timerEnabled && (
 	          <div className="flex items-center gap-2">
-	            <i className={`ri-time-line text-lg ${isPaused ? 'text-red-500' : darkMode ? 'text-gray-400' : 'text-gray-500'}`}></i>
-	            <span className={`text-lg font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-700'} tabular-nums`}>
+	            <i className={`ri-time-line text-2xl ${isPaused ? 'text-red-500' : darkMode ? 'text-gray-400' : 'text-gray-500'}`}></i>
+	            <span className={`text-[1.75rem] font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-700'} tabular-nums`}>
 	              {formatTime(time)}
 	            </span>
 	            {isPaused && (
-	              <span className="text-base text-red-500 font-semibold ml-1">PAUSED</span>
+	              <span className="text-lg text-red-500 font-semibold ml-1">PAUSED</span>
 	            )}
 	          </div>
 	        )}

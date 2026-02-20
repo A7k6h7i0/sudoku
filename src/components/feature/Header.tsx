@@ -18,21 +18,21 @@ export default function Header({ difficulty, onDifficultyChange, darkMode }: Hea
 
   return (
     <header className={`w-full ${darkMode ? 'bg-gray-800' : 'bg-gradient-to-r from-cyan-500 via-teal-500 to-blue-500'} shadow-xl`}>
-      <div className="max-w-7xl mx-auto px-3 py-2 md:px-4 md:py-4">
+      <div className="max-w-7xl mx-auto px-3 py-2.5 md:px-4 md:py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img 
               src="/jkv-logo.jpeg" 
               alt="JKV Sudoku Logo" 
-              className="w-10 h-10 md:w-12 md:h-12 rounded-lg shadow-md"
+              className="w-12 h-12 md:w-12 md:h-12 rounded-lg shadow-md"
             />
-            <h1 className="text-2xl md:text-4xl font-bold text-white">JKV Sudoku</h1>
+            <h1 className="text-4xl md:text-4xl font-bold text-white">JKV Sudoku</h1>
           </div>
           
           <div className="relative">
             <button
               onClick={() => setShowMenu(!showMenu)}
-              className="flex items-center gap-2 bg-white/25 hover:bg-white/35 border border-white/25 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-xl transition-all duration-200 backdrop-blur-sm text-base md:text-lg shadow-lg"
+              className="flex items-center gap-2 bg-white/25 hover:bg-white/35 border border-white/25 text-white px-4 py-2 md:px-4 md:py-2 rounded-xl transition-all duration-200 backdrop-blur-sm text-xl md:text-lg shadow-lg"
             >
               <span className="capitalize font-medium">{difficulty}</span>
               <i className={`ri-arrow-down-s-line text-2xl transition-transform ${showMenu ? 'rotate-180' : ''}`}></i>

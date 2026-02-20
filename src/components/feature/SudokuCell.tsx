@@ -84,7 +84,7 @@ export default function SudokuCell({
   };
 
   const getValueClasses = () => {
-    const classes = ['text-2xl md:text-3xl font-semibold'];
+    const classes = ['text-[2.2rem] sm:text-[2.45rem] md:text-3xl font-semibold'];
     
     if (cell.given) {
       classes.push(darkMode ? 'text-gray-100 font-bold' : 'text-[#082547] font-bold');
@@ -106,7 +106,7 @@ export default function SudokuCell({
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
             <div
               key={num}
-              className={`flex items-center justify-center text-[10px] md:text-[12px] ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}
+              className={`flex items-center justify-center text-[12px] md:text-[12px] ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}
             >
               {cell.notes.has(num) ? num : ''}
             </div>
