@@ -32,7 +32,7 @@ export default function Header({ difficulty, onDifficultyChange, darkMode }: Hea
           <div className="relative">
             <button
               onClick={() => setShowMenu(!showMenu)}
-              className="flex items-center gap-2 bg-white/25 hover:bg-white/35 border border-white/25 text-white px-4 py-2 md:px-4 md:py-2 rounded-xl transition-all duration-200 backdrop-blur-sm text-xl md:text-lg shadow-lg"
+              className="flex items-center gap-2 bg-white/25 hover:bg-white/35 border border-white/25 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-xl transition-all duration-200 backdrop-blur-sm text-lg md:text-lg shadow-lg"
             >
               <span className="capitalize font-medium">{difficulty}</span>
               <i className={`ri-arrow-down-s-line text-2xl transition-transform ${showMenu ? 'rotate-180' : ''}`}></i>
